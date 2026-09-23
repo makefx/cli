@@ -65,19 +65,21 @@ Commands:
   account [--account ID]        Show balance and active holds
   purchase create --account ID --product PRODUCT --request-id ID
                                 Prepare a credit purchase without charging a card
-  purchase get --purchase ID   Read credit purchase status
-  profile get                  Show the signed-in profile
-  profile update --name NAME   Change the signed-in display name
-  health                       Check service reachability and environment
+  purchase get --purchase ID    Read credit purchase status
+  profile get                   Show the signed-in profile
+  profile update --name NAME    Change the signed-in display name
+  health                        Check service reachability and environment
   spaces [--account ID] [--query TEXT] [--limit N]
                                 List available spaces
   space create --name NAME [--account ID] [--id ID]
+                                Create a space in an account you can edit
   space get --space S [--starred-only]
+                                Read every asset, link, and recipe in a space
   space update --space S --name TEXT
                                 Rename a space; every address it has worn keeps working
   space publish --space S       Publish a read-only snapshot (account owner only)
   space unpublish --space S     Withdraw the public snapshot (account owner only)
-  space delete --space S
+  space delete --space S        Soft-delete a space (account owner only)
   voices sync --account ACCOUNT Refresh the account's ElevenLabs voices
   models [--space S] [--kind K] [--family F]
                                 List the model catalog for the payer
@@ -97,7 +99,9 @@ Commands:
   audio align ASSET --space S   Align or re-align unchanged ready audio
   audio timings ASSET --space S Read or save current canonical timings
   link --space S --from A --to B
+                                Link two assets on the canvas
   unlink --space S (--link L | --from A --to B)
+                                Remove a canvas link
   export --space S [--out PATH] Export a space document via export_space
   open SPACE                    Print and open a canonical space URL
   open ASSET --space S          Print and open a canonical asset URL
