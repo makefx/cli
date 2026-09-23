@@ -58,6 +58,15 @@ export async function waitForAuthorizationCode(
       const error = url.searchParams.get('error');
       const errorDescription = url.searchParams.get('error_description');
 
+      // Only a callback carrying this login's state may end it. Anything else
+      // reaching the loopback port, such as another page in the browser, is
+      // refused without cancelling or answering the login.
+      if (state !== expectedState) {
+        res.writeHead(400, { 'Content-Type': 'text/html' });
+        res.end(getErrorPage('invalid_request', 'This callback does not belong to the login in progress.'));
+        return;
+      }
+
       // Handle OAuth error response
       if (error) {
         res.writeHead(400, { 'Content-Type': 'text/html' });
@@ -74,15 +83,6 @@ export async function waitForAuthorizationCode(
         clearTimeout(timeout);
         server.close();
         reject(new Error('Missing authorization code'));
-        return;
-      }
-
-      if (state !== expectedState) {
-        res.writeHead(400, { 'Content-Type': 'text/html' });
-        res.end(getErrorPage('invalid_request', 'State parameter mismatch - possible CSRF attack'));
-        clearTimeout(timeout);
-        server.close();
-        reject(new Error('State mismatch'));
         return;
       }
 
@@ -190,6 +190,10 @@ function getSuccessPage(): string {
 </html>`;
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
+}
+
 function getErrorPage(error: string, description?: string): string {
   return `<!DOCTYPE html>
 <html>
@@ -224,8 +228,8 @@ function getErrorPage(error: string, description?: string): string {
 <body>
   <div class="container">
     <h1>❌ Login Failed</h1>
-    <p>${description || 'Authorization was denied or failed.'}</p>
-    <p class="error-code">Error: ${error}</p>
+    <p>${escapeHtml(description || 'Authorization was denied or failed.')}</p>
+    <p class="error-code">Error: ${escapeHtml(error)}</p>
     <p>Please return to the terminal and try again.</p>
   </div>
 </body>
