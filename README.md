@@ -136,8 +136,8 @@ Apache-licensed code and the makefx name.
 
 Production is the default. `--env stage` and `--env local` are intended for
 makefx.app development. Credentials are stored per environment in
-`$XDG_CONFIG_HOME/makefx-cli/config.json` (by default under `~/.config`); the
-CLI never writes them into a project directory.
+`$XDG_CONFIG_HOME/makefx-cli/config.json` (by default under `~/.config`),
+readable only by your user; the CLI never writes them into a project directory.
 
 ## Development
 

@@ -1,4 +1,4 @@
-import { mkdir, open, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { CliUsageError } from './errors.ts';
@@ -34,10 +34,18 @@ async function loadMultiEnvConfig(): Promise<MultiEnvConfig | null> {
   }
 }
 
+/**
+ * The file holds refresh tokens, so only its owner may read it. It is written
+ * beside the old one and renamed over it, so a reader never sees half a file
+ * and a file first saved by an older client loses its wider permissions.
+ */
 async function saveMultiEnvConfig(multiConfig: MultiEnvConfig): Promise<void> {
   const configPath = await getConfigPath();
-  await mkdir(path.dirname(configPath), { recursive: true });
-  await writeFile(configPath, JSON.stringify(multiConfig, null, 2), 'utf8');
+  await mkdir(path.dirname(configPath), { recursive: true, mode: 0o700 });
+  const temporary = `${configPath}.${process.pid}.tmp`;
+  await writeFile(temporary, JSON.stringify(multiConfig, null, 2), { encoding: 'utf8', mode: 0o600 });
+  await chmod(temporary, 0o600);
+  await rename(temporary, configPath);
 }
 
 export async function saveConfig(config: StoredConfig): Promise<void> {
