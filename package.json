@@ -32,7 +32,10 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"src/**/*.test.ts\"",
-    "check": "npm run typecheck && npm test && npm run build"
+    "lint:boundary": "node scripts/check-public-boundary.mjs",
+    "package:verify": "node scripts/verify-package.mjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run lint:boundary && npm run package:verify",
+    "prepack": "npm run build && npm run lint:boundary"
   },
   "keywords": [
     "makefx",

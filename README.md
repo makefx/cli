@@ -143,11 +143,14 @@ readable only by your user; the CLI never writes them into a project directory.
 
 ```bash
 npm install
-npm run typecheck
-npm test
-npm run build
+npm run check
 node dist/makefx.js --help
 ```
+
+`npm run check` type-checks and tests the client, builds the executable,
+verifies the public client boundary, and installs the packed npm tarball in a
+clean directory to exercise help, sign-in hints, and an authenticated tool call
+against a local mock server.
 
 ## License
 
