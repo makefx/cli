@@ -63,6 +63,7 @@ try {
     'LICENSE',
     'NOTICE',
     'README.md',
+    'THIRD_PARTY_NOTICES.md',
     'TRADEMARKS.md',
     'dist/makefx.js',
     'package.json',

@@ -152,6 +152,11 @@ verifies the public client boundary, and installs the packed npm tarball in a
 clean directory to exercise help, sign-in hints, and an authenticated tool call
 against a local mock server.
 
+Contributions are welcome for the public client. Read
+[CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) before opening
+a pull request or reporting a vulnerability.
+
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Apache License 2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE), and
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
