@@ -55,6 +55,28 @@ describe('withConfigLock', () => {
     });
     assert.equal(readFileSync(lockPath, 'utf8'), 'someone-else');
   });
+
+  test('contenders that all find the same stale lock still hold it one at a time', async () => {
+    const lockPath = `${await getConfigPath()}.lock`;
+    mkdirSync(join(lockPath, '..'), { recursive: true });
+    writeFileSync(lockPath, 'dead-process');
+    const longAgo = (Date.now() - 5 * 60_000) / 1000;
+    utimesSync(lockPath, longAgo, longAgo);
+
+    let holders = 0;
+    let most = 0;
+    await Promise.all(
+      Array.from({ length: 6 }, () =>
+        withConfigLock(async () => {
+          most = Math.max(most, ++holders);
+          await new Promise((resolve) => setTimeout(resolve, 20));
+          holders--;
+        }),
+      ),
+    );
+    assert.equal(most, 1);
+    assert.equal(existsSync(`${lockPath}.takeover`), false);
+  });
 });
 
 describe('saveConfig', () => {
@@ -89,5 +111,19 @@ describe('saveConfig', () => {
 
     assert.equal(statSync(configPath).mode & 0o777, 0o600);
     assert.deepEqual(await loadStoredConfig('production'), stored);
+  });
+
+  test('a new credentials directory is private to its owner', { skip: process.platform === 'win32' }, async () => {
+    await saveConfig(stored);
+    assert.equal(statSync(join(await getConfigPath(), '..')).mode & 0o777, 0o700);
+  });
+
+  test('concurrent saves for different environments keep both', async () => {
+    await Promise.all(
+      ['production', 'stage', 'local'].map((environment) => saveConfig({ ...stored, environment })),
+    );
+    for (const environment of ['production', 'stage', 'local']) {
+      assert.equal((await loadStoredConfig(environment))?.environment, environment);
+    }
   });
 });

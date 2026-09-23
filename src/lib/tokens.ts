@@ -1,5 +1,5 @@
 import type { StoredConfig, StoredToken } from './types.ts';
-import { loadStoredConfig, saveConfig, withConfigLock } from './config.ts';
+import { loadStoredConfig, saveConfigHoldingLock, withConfigLock } from './config.ts';
 
 /**
  * The CLI's side of the OAuth token lifecycle: finding the endpoints,
@@ -234,7 +234,7 @@ async function refreshUnlocked(config: StoredConfig, fetchImpl: typeof fetch): P
     user: tokens.user ?? config.user,
     updatedAt: new Date().toISOString(),
   };
-  await saveConfig(refreshed);
+  await saveConfigHoldingLock(refreshed);
   return refreshed;
 }
 

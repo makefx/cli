@@ -48,7 +48,17 @@ async function saveMultiEnvConfig(multiConfig: MultiEnvConfig): Promise<void> {
   await rename(temporary, configPath);
 }
 
+/**
+ * Every write reads the whole file and replaces it, so each one runs under
+ * the config lock: otherwise a login or logout could write back a refresh
+ * token that a concurrent refresh has just consumed.
+ */
 export async function saveConfig(config: StoredConfig): Promise<void> {
+  await withConfigLock(() => saveConfigHoldingLock(config));
+}
+
+/** saveConfig for a caller already inside withConfigLock, which is not reentrant. */
+export async function saveConfigHoldingLock(config: StoredConfig): Promise<void> {
   const multiConfig = (await loadMultiEnvConfig()) || { configs: {} };
   multiConfig.configs[config.environment] = config;
   await saveMultiEnvConfig(multiConfig);
@@ -70,6 +80,10 @@ export async function listStoredConfigs(): Promise<StoredConfig[]> {
 }
 
 export async function removeConfig(environment?: string): Promise<void> {
+  await withConfigLock(() => removeConfigHoldingLock(environment));
+}
+
+async function removeConfigHoldingLock(environment?: string): Promise<void> {
   if (!environment) {
     // Remove all configs
     const configPath = await getConfigPath();
@@ -102,6 +116,41 @@ const LOCK_STALE_MS = 60_000;
 /** How long to wait for another process before giving up. */
 const LOCK_WAIT_MS = 10_000;
 
+type StaleLockRecovery = 'retired' | 'fresh' | 'takeover-held';
+
+/**
+ * Removes a lock left by a crashed process.
+ *
+ * Two contenders can both find the same lock stale, and the first to retire
+ * it may already hold a fresh one by the time the second acts. Recovery is
+ * therefore serialized through a takeover file, and the lock is re-checked
+ * under it: a lock that is no longer stale is left alone. The takeover file
+ * lives for two file operations and is never removed by anyone but its
+ * creator, so one left by a crash in that window waits for a person.
+ */
+async function retireStaleLock(lockPath: string): Promise<StaleLockRecovery> {
+  let takeover;
+  try {
+    takeover = await open(takeoverPathFor(lockPath), 'wx');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') return 'takeover-held';
+    throw error;
+  }
+  try {
+    await takeover.close();
+    const age = Date.now() - ((await stat(lockPath).catch(() => null))?.mtimeMs ?? Date.now());
+    if (age <= LOCK_STALE_MS) return 'fresh';
+    await rm(lockPath, { force: true });
+    return 'retired';
+  } finally {
+    await rm(takeoverPathFor(lockPath), { force: true });
+  }
+}
+
+function takeoverPathFor(lockPath: string): string {
+  return `${lockPath}.takeover`;
+}
+
 /**
  * Runs `fn` while holding an exclusive lock on the config file.
  *
@@ -113,7 +162,7 @@ const LOCK_WAIT_MS = 10_000;
  */
 export async function withConfigLock<T>(fn: () => Promise<T>): Promise<T> {
   const lockPath = `${await getConfigPath()}.lock`;
-  await mkdir(path.dirname(lockPath), { recursive: true });
+  await mkdir(path.dirname(lockPath), { recursive: true, mode: 0o700 });
   const deadline = Date.now() + LOCK_WAIT_MS;
   // The lock names its owner, so a process only ever removes its own lock and
   // never one another process took over after a takeover of a stale file.
@@ -130,17 +179,14 @@ export async function withConfigLock<T>(fn: () => Promise<T>): Promise<T> {
         throw error;
       }
       const age = Date.now() - ((await stat(lockPath).catch(() => null))?.mtimeMs ?? Date.now());
-      if (age > LOCK_STALE_MS) {
-        // Two contenders can both find the same lock stale. A rename is atomic,
-        // so exactly one of them retires it; the other's rename fails and it
-        // simply tries the lock again, now against the winner's fresh file.
-        const retired = `${lockPath}.stale-${process.pid}`;
-        await rename(lockPath, retired).catch(() => undefined);
-        await rm(retired, { force: true });
-        continue;
-      }
+      const recovery = age > LOCK_STALE_MS ? await retireStaleLock(lockPath) : 'fresh';
+      if (recovery === 'retired') continue;
       if (Date.now() > deadline) {
-        throw new Error(`Another process holds ${lockPath}; remove it if no other CLI is running`);
+        throw new Error(
+          recovery === 'takeover-held'
+            ? `A crashed process left ${takeoverPathFor(lockPath)}; remove it and ${lockPath} if no other CLI is running`
+            : `Another process holds ${lockPath}; remove it if no other CLI is running`,
+        );
       }
       await new Promise((resolve) => setTimeout(resolve, 50 + Math.random() * 100));
     }
