@@ -255,8 +255,15 @@ describe('CLI token lifecycle across processes', () => {
       new Promise((_resolve, reject) => {
         init?.signal?.addEventListener('abort', () => reject(new Error('aborted')));
       });
+    // AbortSignal.timeout does not keep the event loop alive, and this fake
+    // fetch holds no socket as a real one would, so hold the loop open here.
+    const keepAlive = setTimeout(() => undefined, 2_000);
     const started = Date.now();
-    assert.equal(await revokeStoredToken(config(), hanging, 100), false);
+    try {
+      assert.equal(await revokeStoredToken(config(), hanging, 100), false);
+    } finally {
+      clearTimeout(keepAlive);
+    }
     assert.ok(Date.now() - started < 2_000);
   });
 });
