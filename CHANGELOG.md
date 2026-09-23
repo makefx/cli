@@ -3,7 +3,7 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
-## 2.0.0 — 2026-09-23
+## 2.0.0 — 2026-09-24
 
 ### One canvas for you and your agent
 
