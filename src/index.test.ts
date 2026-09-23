@@ -63,6 +63,14 @@ test('help command displays available commands', async () => {
   assert.ok(result.stdout.includes('--file ./frame.png'), 'Help should include an upload example');
 });
 
+test('--version and version print the version without authenticating', async () => {
+  for (const args of [['--version'], ['version']]) {
+    const result = await runCli(args, process.cwd());
+    assert.equal(result.code, 0, result.stderr);
+    assert.equal(result.stdout, '0.0.0-dev\n');
+  }
+});
+
 test('every top-level command exposes help without authentication', async () => {
   const commands = [
     'login',

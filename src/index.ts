@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import process from 'node:process';
 import { SERVICE_NAME } from './lib/project.ts';
+import { CLI_VERSION } from './lib/version.ts';
 import { CONVENIENCE_USAGE, handleExport, handleOpen } from './commands/convenience.ts';
 import { handleCreate } from './commands/create.ts';
 import { handleLogin } from './commands/login.ts';
@@ -29,6 +30,10 @@ async function main() {
       printHelp();
       return;
     }
+    if (command === '--version' || command === 'version') {
+      console.log(CLI_VERSION);
+      return;
+    }
     if (command === 'help') {
       const [topic, nested] = args;
       if (topic) printTopicHelp(topic, nested);
@@ -49,7 +54,7 @@ async function main() {
 
 function printHelp(): void {
   console.log(`
-${SERVICE_NAME} CLI
+${SERVICE_NAME} CLI ${CLI_VERSION}
 
 Usage: makefx <command> [options]
 
@@ -102,6 +107,7 @@ Common options:
   --local                       Shortcut for --env local
   --json                        Print unchanged structured tool output where supported
   --help                        Show command help without authenticating
+  --version                     Print the installed CLI version
 
 Open control:
   --no-open                     Print the URL without launching a browser

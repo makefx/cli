@@ -14,6 +14,7 @@ await build({
   platform: 'node',
   format: 'esm',
   target: 'node22',
+  define: { __MAKEFX_CLI_VERSION__: JSON.stringify(packageJson.version) },
   legalComments: 'none',
 });
 
