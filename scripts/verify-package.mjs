@@ -59,6 +59,7 @@ try {
   assert.equal(pack.code, 0, pack.stderr);
   const [{ filename, files }] = JSON.parse(pack.stdout);
   assert.deepEqual(files.map((file) => file.path).sort(), [
+    'CHANGELOG.md',
     'LICENSE',
     'NOTICE',
     'README.md',

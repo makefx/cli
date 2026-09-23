@@ -1,0 +1,83 @@
+name: Publish npm package
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Only main publishes, and npm provenance needs a public source repository.
+    if: ${{ github.ref == 'refs/heads/main' && !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Read release version
+        id: release
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          [[ "$PACKAGE_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "makefx@$PACKAGE_VERSION" version >/dev/null 2>&1; then
+            # A rerun after publication releases the commit npm recorded, not current main.
+            RELEASE_SHA="$(npm view "makefx@$PACKAGE_VERSION" gitHead || true)"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            RELEASE_SHA="$GITHUB_SHA"
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
+      - if: steps.release.outputs.published == 'false'
+        run: npm ci
+      - if: steps.release.outputs.published == 'false'
+        run: npm run check
+      - if: steps.release.outputs.published == 'false'
+        run: npm publish --access public --provenance
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          TAG="v$PACKAGE_VERSION"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            exit 0
+          fi
+          if [[ ! "$RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::npm recorded no source commit for makefx@$PACKAGE_VERSION"
+            exit 1
+          fi
+          if git ls-remote --exit-code origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"
+            test "$(git rev-list -n 1 "$TAG")" = "$RELEASE_SHA"
+          fi
+          git fetch --depth=1 origin "$RELEASE_SHA"
+          git show "$RELEASE_SHA:CHANGELOG.md" | awk -v version="$PACKAGE_VERSION" '
+            index($0, "## " version " ") == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' > release-notes.md
+          test -s release-notes.md
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$RELEASE_SHA" \
+            --title "makefx $PACKAGE_VERSION" \
+            --notes-file release-notes.md

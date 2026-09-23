@@ -1,0 +1,10 @@
+# Every repository change crosses the public package boundary and requires the
+# human owner. The explicit release paths below make that trust boundary easy
+# to audit even though the catch-all already covers them.
+* @krasnoperov
+
+/.github/CODEOWNERS @krasnoperov
+/.github/workflows/ @krasnoperov
+/package.json @krasnoperov
+/package-lock.json @krasnoperov
+/scripts/ @krasnoperov
