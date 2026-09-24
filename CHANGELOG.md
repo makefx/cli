@@ -3,6 +3,10 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.0.1 — 2026-09-24
+
+- Always print the login authorization URL, callback port, and an SSH tunnel command with the detected hostname so remote login can be completed from a local browser.
+
 ## 2.0.0 — 2026-09-24
 
 ### One canvas for you and your agent

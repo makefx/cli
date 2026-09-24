@@ -134,7 +134,7 @@ Run makefx <command> --help, makefx space help, makefx asset help, makefx audio 
 
 function helpForCommand(command: string): string {
   const staticUsage: Record<string, string> = {
-    login: 'Usage: makefx login [--env production|stage|local] [--local]',
+    login: 'Usage: makefx login [--env production|stage|local] [--local]\n\nPrints the browser authorization URL and loopback callback port (8765).\nFor remote hosts, also prints an SSH tunnel command to run on your browser computer.',
     logout: 'Usage: makefx logout [--env production|stage|local] [--local]',
     mcp: 'Usage: makefx mcp [--env production|stage|local] [--local]',
     create:
