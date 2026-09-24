@@ -16,6 +16,19 @@ npm install -g makefx
 makefx login
 ```
 
+Login always prints the authorization URL and callback address
+(`http://127.0.0.1:8765/callback`), then tries to open a browser. If the CLI is
+running on a remote host, keep login running and open a separate terminal on
+the computer with your browser. Start the printed SSH tunnel before opening
+the authorization URL:
+
+```bash
+ssh -N -L 8765:127.0.0.1:8765 user@remote-host
+```
+
+The CLI suggests the detected hostname; replace it with your usual SSH
+destination or alias if needed. Keep the tunnel open until login finishes.
+
 Use `--env production|stage|local` to keep separate credentials and select the
 endpoint. Production is the default. `makefx logout` revokes the grant when the
 service is reachable and always removes the stored credentials; a grant can

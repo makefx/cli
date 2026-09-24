@@ -1,6 +1,6 @@
 {
   "name": "makefx",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Make images, video, and audio on makefx.app from your terminal or coding agent.",
   "license": "Apache-2.0",
   "type": "module",

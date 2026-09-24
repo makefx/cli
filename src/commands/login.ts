@@ -1,4 +1,5 @@
 import process from 'node:process';
+import { hostname } from 'node:os';
 import type { ParsedArgs, StoredConfig } from '../lib/types.ts';
 import {
   DEFAULT_CLIENT_ID,
@@ -51,12 +52,18 @@ export async function handleLogin(parsed: ParsedArgs) {
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('resource', mcpResourceFor(baseUrl));
 
+  console.log(`\nOpen this URL in your browser to authenticate:\n\n${authUrl.toString()}\n`);
+  console.log(`The OAuth callback uses ${redirectUri} (port ${redirectPort}).`);
+  const detectedHost = hostname();
+  const sshHost = /^[a-zA-Z0-9][a-zA-Z0-9.-]*$/.test(detectedHost) ? detectedHost : 'YOUR_SSH_HOST';
+  console.log('If this CLI is on a remote host, run this in a separate terminal on the computer with your browser before opening the URL:');
+  console.log(`  ssh -N -L ${redirectPort}:127.0.0.1:${redirectPort} ${sshHost}`);
+  console.log('Use your usual SSH destination (user@host or SSH alias) if the detected hostname is not reachable. Keep the tunnel open until login finishes.\n');
   console.log('Opening browser for Google authentication...');
   try {
     await openBrowser(authUrl.toString());
   } catch {
-    console.warn('Unable to open browser automatically. Please copy the URL below into your browser:');
-    console.log(authUrl.toString());
+    console.warn('Unable to open browser automatically. Please open the URL above in your browser.');
   }
 
   const { code } = await waitForAuthorizationCode(redirectPort, state);
