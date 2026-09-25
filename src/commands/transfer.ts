@@ -129,7 +129,12 @@ function uploadMime(parsed: ParsedArgs, path: string): string {
   const explicit = optional(parsed, 'mime');
   if (explicit) return explicit;
   const inferred = MIME_BY_EXTENSION[extname(path).toLowerCase()];
-  if (!inferred) throw new CliUsageError('Cannot infer media type from --file; pass --mime <type>.');
+  if (!inferred) {
+    const supported = Object.keys(MIME_BY_EXTENSION).sort().join(', ');
+    throw new CliUsageError(
+      `Cannot infer media type from --file; supported uploads are ${supported} — pass --mime <type> to override.`,
+    );
+  }
   return inferred;
 }
 

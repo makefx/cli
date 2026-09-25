@@ -24,6 +24,30 @@ test('reports usage errors with exit status 2', () => {
   assert.deepEqual(captured.stderr, ['Error: --count is invalid.\n']);
 });
 
+test('reports usage errors as JSON on stdout when json is requested', () => {
+  const captured = capture();
+
+  assert.equal(reportCommandError(new CliUsageError('--count is invalid.'), true, captured.output), 2);
+  assert.deepEqual(captured.stdout, [`${JSON.stringify({ code: 'usage', message: '--count is invalid.' })}\n`]);
+  assert.deepEqual(captured.stderr, ['Error: --count is invalid.\n']);
+});
+
+test('reports generic errors with exit status 1 and no stdout when json is not requested', () => {
+  const captured = capture();
+
+  assert.equal(reportCommandError(new Error('Unexpected failure.'), false, captured.output), 1);
+  assert.deepEqual(captured.stdout, []);
+  assert.deepEqual(captured.stderr, ['Error: Unexpected failure.\n']);
+});
+
+test('reports generic errors as JSON on stdout when json is requested', () => {
+  const captured = capture();
+
+  assert.equal(reportCommandError(new Error('Unexpected failure.'), true, captured.output), 1);
+  assert.deepEqual(captured.stdout, [`${JSON.stringify({ code: 'error', message: 'Unexpected failure.' })}\n`]);
+  assert.deepEqual(captured.stderr, ['Error: Unexpected failure.\n']);
+});
+
 test('reports tool errors with structured JSON, code, and top-up URL', () => {
   const captured = capture();
   const structuredContent = {
