@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import process from 'node:process';
 import test from 'node:test';
 import { parseArgs } from '../lib/utils.ts';
 import type { ToolClient } from '../lib/tool-client.ts';
@@ -497,4 +498,71 @@ test('waits for every batch asset to finish before reporting failures', async ()
     /First asset failed/,
   );
   assert.deepEqual(reads, ['as_failed', 'as_ready', 'as_ready']);
+});
+
+test('waited success prints the final ready status under --json', async () => {
+  let reads = 0;
+  const client: ToolClient = {
+    async call(name) {
+      if (name === 'list_models') return { models: [model()], credit_eur: 0.01, actions: [] };
+      if (name === 'create_asset') {
+        return {
+          assets: [{ asset_id: 'as_frame', web_url: 'https://makefx.app/a/as_frame', status: 'queued' }],
+        };
+      }
+      reads += 1;
+      return { asset: { status: reads === 1 ? 'generating' : 'ready' } };
+    },
+  };
+  const output: string[] = [];
+  const parsed = frameArgs('last');
+  parsed.options.wait = 'true';
+  parsed.options.json = 'true';
+
+  await handleCreate(parsed, {
+    client: async () => client,
+    write: (text) => output.push(text),
+    id: () => 'request-id',
+  });
+
+  const printed = JSON.parse(output[0] ?? '{}');
+  assert.deepEqual(printed.assets, [
+    { asset_id: 'as_frame', web_url: 'https://makefx.app/a/as_frame', status: 'ready' },
+  ]);
+});
+
+test('waited failure under --json prints the refreshed envelope with the error and exits 1', async () => {
+  const client: ToolClient = {
+    async call(name) {
+      if (name === 'list_models') return { models: [model()], credit_eur: 0.01, actions: [] };
+      if (name === 'create_asset') {
+        return { assets: [{ asset_id: 'as_frame', web_url: 'https://makefx.app/a/as_frame' }] };
+      }
+      return {
+        asset: { status: 'failed', error: { code: 'provider_failure', message: 'The source video is unavailable.' } },
+      };
+    },
+  };
+  const output: string[] = [];
+  const parsed = frameArgs('last');
+  parsed.options.wait = 'true';
+  parsed.options.json = 'true';
+  const previousExitCode = process.exitCode;
+  process.exitCode = undefined;
+
+  try {
+    await handleCreate(parsed, {
+      client: async () => client,
+      write: (text) => output.push(text),
+      id: () => 'request-id',
+    });
+
+    assert.equal(process.exitCode, 1);
+    const printed = JSON.parse(output[0] ?? '{}');
+    assert.equal(printed.assets[0].asset_id, 'as_frame');
+    assert.equal(printed.assets[0].status, 'failed');
+    assert.equal(printed.assets[0].error.code, 'provider_failure');
+  } finally {
+    process.exitCode = previousExitCode;
+  }
 });
