@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import process from 'node:process';
 import type { ParsedArgs } from '../lib/types.ts';
 import { authenticatedToolClient, type ToolClient } from '../lib/tool-client.ts';
 import { CliUsageError } from '../lib/errors.ts';
@@ -345,13 +346,13 @@ export async function handleCreate(
   }
   const args = createToolArguments(prepared, entry, dependencies.id());
   const created = await client.call('create_asset', args);
-  const assets = Array.isArray(created.assets) ? (created.assets as Array<Record<string, unknown>>) : [];
+  let assets = Array.isArray(created.assets) ? (created.assets as Array<Record<string, unknown>>) : [];
   if (parsed.options.wait === 'true' && !assets.some(({ renders_in }) => renders_in === 'browser')) {
     const spaceId = prepared.spaceId;
-    const failures = await Promise.all(
+    assets = await Promise.all(
       assets.map(async (asset) => {
         const assetId = asset.asset_id;
-        if (typeof assetId !== 'string') return null;
+        if (typeof assetId !== 'string') return asset;
         while (true) {
           const result = await client.call('get_asset', {
             space_id: spaceId,
@@ -359,16 +360,26 @@ export async function handleCreate(
             wait_seconds: 60,
           });
           const current = result.asset as Record<string, unknown> | undefined;
-          if (current?.status === 'ready') return null;
-          if (current?.status === 'failed') {
-            const error = current.error as { message?: string } | null | undefined;
-            return error?.message ?? `Asset ${assetId} failed.`;
+          if (current?.status === 'ready' || current?.status === 'failed') {
+            return current ? { ...asset, ...current } : asset;
           }
         }
       }),
     );
-    const messages = failures.filter((message): message is string => message !== null);
-    if (messages.length > 0) throw new Error(messages.join('\n'));
+    created.assets = assets;
+    const failed = assets.filter((asset) => asset.status === 'failed');
+    if (failed.length > 0) {
+      if (parsed.options.json === 'true') {
+        dependencies.write(JSON.stringify(created, null, 2));
+        process.exitCode = 1;
+        return;
+      }
+      const messages = failed.map((asset) => {
+        const error = asset.error as { message?: string } | null | undefined;
+        return error?.message ?? `Asset ${String(asset.asset_id)} failed.`;
+      });
+      throw new Error(messages.join('\n'));
+    }
   }
   if (parsed.options.json === 'true') {
     dependencies.write(JSON.stringify(created, null, 2));

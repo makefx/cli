@@ -18,9 +18,12 @@ export function reportCommandError(error: unknown, json: boolean, output: ErrorO
     return 1;
   }
   if (error instanceof CliUsageError) {
+    if (json) output.stdout(`${JSON.stringify({ code: 'usage', message: error.message })}\n`);
     output.stderr(`Error: ${error.message}\n`);
     return 2;
   }
-  output.stderr(`Error: ${error instanceof Error ? error.message : 'Unexpected error occurred'}\n`);
+  const message = error instanceof Error ? error.message : 'Unexpected error occurred';
+  if (json) output.stdout(`${JSON.stringify({ code: 'error', message })}\n`);
+  output.stderr(`Error: ${message}\n`);
   return 1;
 }

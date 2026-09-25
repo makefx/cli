@@ -3,6 +3,11 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.0.2 — 2026-09-26
+
+- `create --wait --json` now prints each asset's final ready or failed state instead of the queued state captured before waiting, and exits 1 with the failed asset's error when waiting ends in failure.
+- Usage and unexpected errors are now also written as JSON to stdout under `--json`, and the `upload` error for an unrecognized file extension now names the supported upload types.
+
 ## 2.0.1 — 2026-09-24
 
 - Always print the login authorization URL, callback port, and an SSH tunnel command with the detected hostname so remote login can be completed from a local browser.
