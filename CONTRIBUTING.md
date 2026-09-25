@@ -22,4 +22,6 @@ Do not add commands that accept arbitrary API paths or JSON-RPC methods beyond t
 
 `test/fixtures/mcp-tools.json` lists the public MCP tool names and `test/fixtures/catalog-params.json` holds the parameter schemas the model catalog emits. When the service adds a tool or a model parameter shape, refresh the snapshot in the same pull request that adds the matching command or validation. The tool test fails until every listed tool has a dedicated command in `src/tool-mapping.ts` or a documented exception.
 
+`test/fixtures/catalog-prices.json` contains the `id`, `terms`, and `price` fields from visible provider models in `list_models`. Refresh it when the public price contract changes. The CLI preserves these fields in `models --json` and displays the account-aware `estimate_credits` quote without calculating prices locally.
+
 By contributing, you agree that your contribution is licensed under Apache-2.0.

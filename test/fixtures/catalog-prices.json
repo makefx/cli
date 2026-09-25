@@ -1,0 +1,281 @@
+[
+  {
+    "id": "image/gemini-3-pro-image",
+    "terms": "image/gemini-3-pro-image#2",
+    "price": {
+      "own_key": {
+        "unit": "image",
+        "credits": 2
+      },
+      "unit": "image",
+      "credits": 25,
+      "rules": [
+        {
+          "when": {
+            "resolution": "4k"
+          },
+          "credits": 45
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "image/gemini-3.1-flash-image",
+    "terms": "image/gemini-3.1-flash-image#2",
+    "price": {
+      "own_key": {
+        "unit": "image",
+        "credits": 2
+      },
+      "unit": "image",
+      "credits": 13,
+      "rules": [
+        {
+          "when": {
+            "resolution": "2k"
+          },
+          "credits": 20
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "image/gpt-image-2.5-sunburst",
+    "terms": "image/gpt-image-2.5-sunburst#2",
+    "price": {
+      "own_key": {
+        "unit": "image",
+        "credits": 2
+      },
+      "unit": "image",
+      "credits": 10,
+      "rules": [
+        {
+          "when": {
+            "quality": "low"
+          },
+          "credits": 2
+        },
+        {
+          "when": {
+            "quality": "medium"
+          },
+          "credits": 3
+        },
+        {
+          "when": {
+            "quality": "xhigh"
+          },
+          "credits": 18
+        },
+        {
+          "when": {
+            "quality": "max"
+          },
+          "credits": 39
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "image/flux-2",
+    "terms": "image/flux-2#2",
+    "price": {
+      "own_key": {
+        "unit": "image",
+        "credits": 2
+      },
+      "unit": "image",
+      "credits": 3,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "video/h3-max",
+    "terms": "video/h3-max#4",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 15,
+      "rules": [
+        {
+          "when": {
+            "resolution": "480p"
+          },
+          "credits": 10
+        },
+        {
+          "when": {
+            "resolution": "1080p"
+          },
+          "credits": 30
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "video/gemini-omni-1.1-flash",
+    "terms": "video/gemini-omni-1.1-flash#2",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 20,
+      "rules": [
+        {
+          "when": {
+            "resolution": "1080p"
+          },
+          "credits": 30
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "video/seedance-2.5",
+    "terms": "video/seedance-2.5#5",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 43,
+      "rules": [
+        {
+          "when": {
+            "resolution": "480p",
+            "slot": "reference_video",
+            "kind": "video"
+          },
+          "credits": 80
+        },
+        {
+          "when": {
+            "slot": "reference_video",
+            "kind": "video"
+          },
+          "credits": 178
+        },
+        {
+          "when": {
+            "resolution": "480p"
+          },
+          "credits": 19
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "video/kling-video-ai-avatar-v2",
+    "terms": "video/kling-video-ai-avatar-v2#2",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 11,
+      "rules": [
+        {
+          "when": {
+            "tier": "pro"
+          },
+          "credits": 21
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "audio/eleven-v3",
+    "terms": "audio/eleven-v3#2",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60
+      },
+      "unit": "minute",
+      "credits": 30,
+      "rules": [],
+      "minimum_credits": 5,
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "audio/eleven-text-to-sound-v2",
+    "terms": "audio/eleven-text-to-sound-v2#2",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60
+      },
+      "unit": "track",
+      "credits": 6,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "audio/music-v2",
+    "terms": "audio/music-v2#3",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60
+      },
+      "unit": "minute",
+      "credits": 30,
+      "rules": [],
+      "minimum_credits": 15,
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "audio/lyria-3.5",
+    "terms": "audio/lyria-3.5#2",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60,
+        "estimated_seconds": 180
+      },
+      "unit": "track",
+      "credits": 16,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  }
+]
