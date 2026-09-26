@@ -3,6 +3,10 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.0.3 — 2026-09-26
+
+- `create` refuses a prompt longer than the model's published `prompt_max_chars` before spending credits, and counts prompt length in characters rather than UTF-16 units, as the service does.
+
 ## 2.0.2 — 2026-09-26
 
 - `create --wait --json` now prints each asset's final ready or failed state instead of the queued state captured before waiting, and exits 1 with the failed asset's error when waiting ends in failure.

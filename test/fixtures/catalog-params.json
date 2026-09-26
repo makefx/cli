@@ -226,7 +226,8 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "prompt_max_chars": 2000
   },
   {
     "id": "video/kling-video-ai-avatar-v2",
@@ -242,6 +243,26 @@
         }
       },
       "additionalProperties": false
+    }
+  },
+  {
+    "id": "video/sync-lipsync-2-pro",
+    "schema": {
+      "additionalProperties": false,
+      "properties": {
+        "sync_mode": {
+          "default": "cut_off",
+          "description": "When lengths differ: trim excess, loop, bounce, extend with stillness, or time-stretch the video.",
+          "enum": [
+            "cut_off",
+            "loop",
+            "bounce",
+            "silence",
+            "remap"
+          ]
+        }
+      },
+      "type": "object"
     }
   },
   {
@@ -460,7 +481,8 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "prompt_max_chars": 5000
   },
   {
     "id": "audio/eleven-text-to-sound-v2",
@@ -500,7 +522,8 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "prompt_max_chars": 4100
   },
   {
     "id": "audio/lyria-3.5",
@@ -878,7 +901,8 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "prompt_max_chars": 5000
   },
   {
     "id": "audio/sfx",
@@ -918,7 +942,8 @@
         }
       },
       "additionalProperties": false
-    }
+    },
+    "prompt_max_chars": 4100
   },
   {
     "id": "audio/lyria-music",
