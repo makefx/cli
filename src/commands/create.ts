@@ -66,6 +66,7 @@ type LiveModel = {
   availability: 'available' | 'preview' | 'unavailable';
   hidden: boolean;
   paramsSchema: JsonSchema;
+  promptMaxChars?: number;
 };
 
 function required(parsed: ParsedArgs, name: string): string {
@@ -218,7 +219,7 @@ function prepareCreate(parsed: ParsedArgs): PreparedCreate {
     throw new CliUsageError('--request-id must be at most 64 characters.');
   }
   const prompt = optional(parsed, 'prompt') ?? '';
-  if (prompt.length > 8000) throw new CliUsageError('--prompt must be at most 8000 characters.');
+  if (Array.from(prompt).length > 8000) throw new CliUsageError('--prompt must be at most 8000 characters.');
   return {
     spaceId: required(parsed, 'space'),
     kind,
@@ -284,12 +285,22 @@ function catalogModels(document: Record<string, unknown>): LiveModel[] {
         `list_models returned a malformed catalog: ${error instanceof Error ? error.message : 'invalid params_schema.'}`,
       );
     }
+    const promptMaxChars = model.prompt_max_chars;
+    if (
+      promptMaxChars !== undefined &&
+      (typeof promptMaxChars !== 'number' || !Number.isSafeInteger(promptMaxChars) || promptMaxChars < 1)
+    ) {
+      throw new Error(
+        `list_models returned a malformed catalog: model "${model.id}" prompt_max_chars must be a positive integer.`,
+      );
+    }
     return {
       id: model.id,
       kind: model.kind as LiveModel['kind'],
       availability: model.availability as LiveModel['availability'],
       hidden: model.hidden,
       paramsSchema: model.params_schema,
+      ...(promptMaxChars === undefined ? {} : { promptMaxChars }),
     };
   });
 }
@@ -305,6 +316,16 @@ function createToolArguments(
   if (entry.availability === 'unavailable' && prepared.recipeMode !== 'exact') {
     throw new CliUsageError(
       `Model "${prepared.model}" is unavailable. Run models --space ${prepared.spaceId} to list the catalog.`,
+    );
+  }
+  // An exact replay is judged by the terms it recorded, which the service reads.
+  if (
+    entry.promptMaxChars !== undefined &&
+    prepared.recipeMode !== 'exact' &&
+    Array.from(prepared.prompt).length > entry.promptMaxChars
+  ) {
+    throw new CliUsageError(
+      `--prompt must be at most ${entry.promptMaxChars} characters for model "${prepared.model}".`,
     );
   }
   const validation = validateJsonSchema(entry.paramsSchema, prepared.params);

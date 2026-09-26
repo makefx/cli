@@ -24,7 +24,7 @@ function model(overrides: Record<string, unknown> = {}): Record<string, unknown>
   };
 }
 
-function frameArgs(t?: string) {
+function frameArgs(t?: string, extra: string[] = []) {
   return parseArgs([
     '--space',
     'acme/flight',
@@ -35,6 +35,7 @@ function frameArgs(t?: string) {
     '--ref',
     'as_video:source',
     ...(t ? ['--param', `t=${t}`] : []),
+    ...extra,
   ]);
 }
 
@@ -309,6 +310,26 @@ test('does not create for hidden, unavailable, missing, wrong-kind, or invalid l
   assert.deepEqual(
     invalidCalls.map(({ name }) => name),
     ['list_models'],
+  );
+});
+
+test("refuses a prompt longer than the model's prompt_max_chars before creating", async () => {
+  const seedance = model({ prompt_max_chars: 3 });
+  const withPrompt = (prompt: string) => frameArgs(undefined, ['--prompt', prompt]);
+  const calls: Call[] = [];
+  const client = createClient([seedance], calls);
+  await assert.rejects(
+    handleCreate(withPrompt('abcd'), { client: async () => client, write: () => undefined, id: () => 'request-id' }),
+    /--prompt must be at most 3 characters for model "image\/frame"/,
+  );
+  assert.deepEqual(
+    calls.map(({ name }) => name),
+    ['list_models'],
+  );
+  // Characters, not UTF-16 units: three emoji fit a three-character limit.
+  assert.deepEqual(
+    (await run(withPrompt('😀😀😀'), [seedance])).map(({ name }) => name),
+    ['list_models', 'create_asset'],
   );
 });
 
