@@ -99,6 +99,13 @@
           "type": "integer",
           "minimum": 4,
           "maximum": 50
+        },
+        "guidance": {
+          "default": 2.5,
+          "description": "Higher keeps closer to the prompt.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
         }
       },
       "additionalProperties": false
@@ -153,6 +160,15 @@
             "1:1",
             "3:4",
             "9:16"
+          ]
+        },
+        "prompt_expansion": {
+          "default": "fast",
+          "description": "Off sends your prompt as written; full takes up to 30 s longer.",
+          "enum": [
+            "off",
+            "fast",
+            "full"
           ]
         }
       },
@@ -500,6 +516,11 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "loop": {
+          "default": false,
+          "description": "Ends where it starts, so it repeats seamlessly.",
+          "type": "boolean"
         }
       },
       "additionalProperties": false
@@ -611,6 +632,13 @@
           "type": "integer",
           "minimum": 4,
           "maximum": 50
+        },
+        "guidance": {
+          "default": 2.5,
+          "description": "Higher keeps closer to the prompt.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
         }
       },
       "additionalProperties": false
@@ -920,6 +948,11 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "loop": {
+          "default": false,
+          "description": "Ends where it starts, so it repeats seamlessly.",
+          "type": "boolean"
         }
       },
       "additionalProperties": false

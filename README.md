@@ -88,6 +88,9 @@ makefx create --space ACCOUNT/SPACE --kind image \
 References keep their left-to-right command-line order as MCP order 0, 1, and
 so on. It also accepts `--seed INTEGER`, `--position '{"x":0,"y":0}'`,
 `--tags '["tag"]'`, and `--note TEXT`.
+Every setting a model's schema declares is a `--param`. For example, a
+connector clip that must move only as its prompt says turns off the provider's
+prompt rewrite with `--param prompt_expansion=off`.
 It reads the live catalog for the paying Space before each creation, applies
 that catalog's defaults, and refuses invalid model settings or an unavailable
 current model without calling `create_asset`. Exact replay leaves availability
