@@ -1,7 +1,7 @@
 [
   {
     "id": "image/gemini-3-pro-image",
-    "terms": "image/gemini-3-pro-image#2",
+    "terms": "image/gemini-3-pro-image#5",
     "price": {
       "own_key": {
         "unit": "image",
@@ -23,7 +23,7 @@
   },
   {
     "id": "image/gemini-3.1-flash-image",
-    "terms": "image/gemini-3.1-flash-image#2",
+    "terms": "image/gemini-3.1-flash-image#5",
     "price": {
       "own_key": {
         "unit": "image",
@@ -85,7 +85,7 @@
   },
   {
     "id": "image/flux-2",
-    "terms": "image/flux-2#2",
+    "terms": "image/flux-2#4",
     "price": {
       "own_key": {
         "unit": "image",
@@ -100,7 +100,7 @@
   },
   {
     "id": "video/h3-max",
-    "terms": "video/h3-max#4",
+    "terms": "video/h3-max#8",
     "price": {
       "own_key": {
         "unit": "second",
@@ -129,7 +129,7 @@
   },
   {
     "id": "video/gemini-omni-1.1-flash",
-    "terms": "video/gemini-omni-1.1-flash#2",
+    "terms": "video/gemini-omni-1.1-flash#4",
     "price": {
       "own_key": {
         "unit": "second",
@@ -152,7 +152,7 @@
   },
   {
     "id": "video/seedance-2.5",
-    "terms": "video/seedance-2.5#5",
+    "terms": "video/seedance-2.5#8",
     "price": {
       "own_key": {
         "unit": "second",
@@ -190,7 +190,7 @@
   },
   {
     "id": "video/kling-video-ai-avatar-v2",
-    "terms": "video/kling-video-ai-avatar-v2#2",
+    "terms": "video/kling-video-ai-avatar-v2#4",
     "price": {
       "own_key": {
         "unit": "second",
@@ -213,7 +213,7 @@
   },
   {
     "id": "audio/eleven-v3",
-    "terms": "audio/eleven-v3#2",
+    "terms": "audio/eleven-v3#5",
     "price": {
       "own_key": {
         "unit": "second",
@@ -230,7 +230,7 @@
   },
   {
     "id": "audio/eleven-text-to-sound-v2",
-    "terms": "audio/eleven-text-to-sound-v2#2",
+    "terms": "audio/eleven-text-to-sound-v2#6",
     "price": {
       "own_key": {
         "unit": "second",
@@ -246,7 +246,7 @@
   },
   {
     "id": "audio/music-v2",
-    "terms": "audio/music-v2#3",
+    "terms": "audio/music-v2#6",
     "price": {
       "own_key": {
         "unit": "second",
@@ -263,7 +263,7 @@
   },
   {
     "id": "audio/lyria-3.5",
-    "terms": "audio/lyria-3.5#2",
+    "terms": "audio/lyria-3.5#4",
     "price": {
       "own_key": {
         "unit": "second",
