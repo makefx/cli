@@ -66,6 +66,24 @@ test('maps asset mutation and relationship arguments to their MCP tools', () => 
     },
   );
   assert.deepEqual(
+    mutationToolCall(
+      'asset update',
+      parseArgs(['--space', 'acme/salt', '--asset', 'as_one', '--position', 'null', '--note', 'null']),
+    ),
+    {
+      name: 'update_asset',
+      args: { space_id: 'acme/salt', asset_id: 'as_one', note: null, position: null },
+    },
+  );
+  assert.throws(
+    () =>
+      mutationToolCall(
+        'asset update',
+        parseArgs(['--space', 'acme/salt', '--asset', 'as_one', '--position', '[1,2]']),
+      ),
+    /--position must be a JSON object/,
+  );
+  assert.deepEqual(
     mutationToolCall('asset delete', parseArgs(['--space', 'acme/salt', '--asset', 'as_one'])),
     { name: 'delete_asset', args: { space_id: 'acme/salt', asset_id: 'as_one' } },
   );

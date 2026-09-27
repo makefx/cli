@@ -94,6 +94,11 @@ current model without calling `create_asset`. Exact replay leaves availability
 to the recorded route. Use `--from-asset` with `--recipe-mode current|exact` to
 replay a recipe.
 
+Without `--position`, the canvas lays a new card out by its lineage; with one,
+the card is pinned there. `makefx asset update --space S --asset A --position
+'{"x":0,"y":0}'` pins an existing card, and `--position null` unpins it so the
+layout places it again.
+
 ## Credits and profile
 
 Prepare a purchase quote without sending card data or payment tokens. The

@@ -22,7 +22,7 @@ const USAGE = {
   'profile update': 'profile update --name TEXT [--json]',
   'space update': 'space update --space ACCOUNT/SPACE --name TEXT [--json]',
   'asset update':
-    'asset update --space ACCOUNT/SPACE --asset ID [--name TEXT] [--note TEXT|null] [--traits TEXT|null] [--tags JSON] [--starred true|false] [--position JSON] [--recipe JSON] [--json]',
+    'asset update --space ACCOUNT/SPACE --asset ID [--name TEXT] [--note TEXT|null] [--traits TEXT|null] [--tags JSON] [--starred true|false] [--position JSON|null] [--recipe JSON] [--json]',
   'asset delete': 'asset delete --space ACCOUNT/SPACE --asset ID [--json]',
   describe: 'describe --space ACCOUNT/SPACE --asset ID [--request-id ID] [--json]',
   link: 'link --space ACCOUNT/SPACE --from ASSET --to ASSET [--label TEXT] [--json]',
@@ -92,6 +92,13 @@ function objectOption(parsed: ParsedArgs, name: string): Record<string, unknown>
   return value as Record<string, unknown>;
 }
 
+function nullableObjectOption(
+  parsed: ParsedArgs,
+  name: string,
+): Record<string, unknown> | null | undefined {
+  return optional(parsed, name) === 'null' ? null : objectOption(parsed, name);
+}
+
 function tagsOption(parsed: ParsedArgs): unknown[] | undefined {
   const value = jsonOption(parsed, 'tags');
   if (value === undefined) return undefined;
@@ -139,7 +146,7 @@ export function mutationToolCall(
       const traits = nullableText(parsed, 'traits');
       const tags = tagsOption(parsed);
       const starred = booleanOption(parsed, 'starred');
-      const position = objectOption(parsed, 'position');
+      const position = nullableObjectOption(parsed, 'position');
       const recipe = objectOption(parsed, 'recipe');
       return {
         name: 'update_asset',
