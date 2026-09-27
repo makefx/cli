@@ -92,7 +92,7 @@ Commands:
   download ASSET --space S      Stream ready media to a new local file
   asset get --space S --asset A Read an asset and refresh its URLs
   asset update --space S --asset A
-                                Update asset metadata
+                                Update metadata, or pin or unpin a card
   asset delete --space S --asset A
                                 Soft-delete an asset
   describe --space S --asset A  Describe reusable visual traits
