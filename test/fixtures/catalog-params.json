@@ -501,6 +501,56 @@
     "prompt_max_chars": 5000
   },
   {
+    "id": "audio/eleven-v4",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "voice_id": {
+          "default": "EXAVITQu4vr4xnSDxMaL",
+          "type": "string"
+        },
+        "stability": {
+          "default": 0.5,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "similarity_boost": {
+          "default": 0.75,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "id": "audio/eleven-v4-turbo",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "voice_id": {
+          "default": "EXAVITQu4vr4xnSDxMaL",
+          "type": "string"
+        },
+        "stability": {
+          "default": 0.5,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "similarity_boost": {
+          "default": 0.75,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
     "id": "audio/eleven-text-to-sound-v2",
     "schema": {
       "type": "object",
