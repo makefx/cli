@@ -229,6 +229,40 @@
     }
   },
   {
+    "id": "audio/eleven-v4",
+    "terms": "audio/eleven-v4#1",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60
+      },
+      "managed_markup_percent": 25,
+      "unit": "minute",
+      "credits": 7.892659,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "audio/eleven-v4-turbo",
+    "terms": "audio/eleven-v4-turbo#1",
+    "price": {
+      "own_key": {
+        "unit": "second",
+        "credits": 2,
+        "seconds": 60
+      },
+      "managed_markup_percent": 25,
+      "unit": "minute",
+      "credits": 3.946329,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  },
+  {
     "id": "audio/eleven-text-to-sound-v2",
     "terms": "audio/eleven-text-to-sound-v2#6",
     "price": {
