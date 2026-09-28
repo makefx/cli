@@ -3,6 +3,10 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.1.1 — 2026-09-29
+
+- `create` falls back to server-side validation when a payer's account-aware model catalog exceeds the MCP result-size limit.
+
 ## 2.1.0 — 2026-09-27
 
 - `asset update --position null` unpins a card so the canvas lays it out by its lineage again; an object still pins it. Leaving `--position` off `create` or `upload` now leaves the card to that layout.

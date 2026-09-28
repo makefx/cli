@@ -86,7 +86,7 @@ Commands:
   estimate --kind K --model M [--from-asset A] [--recipe-mode current|exact]
                                 Quote creation or replay before spending credits
   create --space S --kind K --model M
-                                Validate the payer catalog, then create assets
+                                Validate from the payer catalog before creation
   upload --space S --kind K --file PATH
                                 Stream a local file through a signed URL
   download ASSET --space S      Stream ready media to a new local file

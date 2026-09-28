@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import process from 'node:process';
 import type { ParsedArgs } from '../lib/types.ts';
 import { authenticatedToolClient, type ToolClient } from '../lib/tool-client.ts';
-import { CliUsageError } from '../lib/errors.ts';
+import { CliUsageError, ToolCallError } from '../lib/errors.ts';
 import { assertJsonSchema, validateJsonSchema, type JsonSchema } from '../lib/json-schema.ts';
 
 type CreateDependencies = {
@@ -333,13 +333,21 @@ function createToolArguments(
     const field = validation.issue.field.replace(/^params\.?/, '') || 'params';
     throw new CliUsageError(`Invalid --param ${field}: ${validation.issue.message}`);
   }
+  return createAssetArguments(prepared, validation.value, requestId);
+}
+
+function createAssetArguments(
+  prepared: PreparedCreate,
+  params: unknown,
+  requestId: string,
+): Record<string, unknown> {
   return {
     space_id: prepared.spaceId,
     kind: prepared.kind,
     model: prepared.model,
     prompt: prepared.prompt,
     references: prepared.references,
-    params: validation.value,
+    params,
     count: prepared.count,
     ...(prepared.recipeMode === undefined ? {} : { recipe_mode: prepared.recipeMode }),
     ...(prepared.fromAssetId ? { from_asset_id: prepared.fromAssetId } : {}),
@@ -358,14 +366,24 @@ export async function handleCreate(
 ): Promise<void> {
   const prepared = prepareCreate(parsed);
   const client = await dependencies.client(parsed);
-  const catalog = await client.call('list_models', { space_id: prepared.spaceId });
-  const entry = catalogModels(catalog).find(({ id, hidden }) => id === prepared.model && !hidden);
-  if (!entry) {
-    throw new CliUsageError(
-      `Unknown model "${prepared.model}". Run models --space ${prepared.spaceId} to list the catalog.`,
-    );
+  const requestId = dependencies.id();
+  let args: Record<string, unknown>;
+  try {
+    const catalog = await client.call('list_models', { space_id: prepared.spaceId });
+    const entry = catalogModels(catalog).find(({ id, hidden }) => id === prepared.model && !hidden);
+    if (!entry) {
+      throw new CliUsageError(
+        `Unknown model "${prepared.model}". Run models --space ${prepared.spaceId} to list the catalog.`,
+      );
+    }
+    args = createToolArguments(prepared, entry, requestId);
+  } catch (error) {
+    if (!(error instanceof ToolCallError) || error.code !== 'result_too_large') throw error;
+    // The service validates the model, defaults and params in create_asset
+    // before it quotes or submits. Keep this fallback for oversized catalogs,
+    // such as a payer with a large account-specific voice list.
+    args = createAssetArguments(prepared, prepared.params, requestId);
   }
-  const args = createToolArguments(prepared, entry, dependencies.id());
   const created = await client.call('create_asset', args);
   let assets = Array.isArray(created.assets) ? (created.assets as Array<Record<string, unknown>>) : [];
   if (parsed.options.wait === 'true' && !assets.some(({ renders_in }) => renders_in === 'browser')) {

@@ -91,11 +91,12 @@ so on. It also accepts `--seed INTEGER`, `--position '{"x":0,"y":0}'`,
 Every setting a model's schema declares is a `--param`. For example, a
 connector clip that must move only as its prompt says turns off the provider's
 prompt rewrite with `--param prompt_expansion=off`.
-It reads the live catalog for the paying Space before each creation, applies
-that catalog's defaults, and refuses invalid model settings or an unavailable
-current model without calling `create_asset`. Exact replay leaves availability
-to the recorded route. Use `--from-asset` with `--recipe-mode current|exact` to
-replay a recipe.
+It reads the live catalog for the paying Space before each creation and applies
+that catalog's defaults. If the catalog response exceeds MCP's result limit,
+the CLI sends the original settings to `create_asset`, which applies the same
+validation and defaults before quoting or generating. Exact replay leaves
+availability to the recorded route. Use `--from-asset` with
+`--recipe-mode current|exact` to replay a recipe.
 
 Without `--position`, the canvas lays a new card out by its lineage; with one,
 the card is pinned there. `makefx asset update --space S --asset A --position

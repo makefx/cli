@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import process from 'node:process';
 import test from 'node:test';
+import { ToolCallError } from '../lib/errors.ts';
 import { parseArgs } from '../lib/utils.ts';
 import type { ToolClient } from '../lib/tool-client.ts';
 import { handleCreate } from './create.ts';
@@ -126,6 +127,44 @@ test('uses a newly served model id and applies defaults from its live schema', a
     prompt: 'A market',
     references: [],
     params: { quality: 'server-default' },
+    count: 1,
+    tags: [],
+    request_id: 'request-id',
+  });
+});
+
+test('falls back to server validation when the paying catalog exceeds the MCP result limit', async () => {
+  const calls: Call[] = [];
+  const client: ToolClient = {
+    async call(name, args) {
+      calls.push({ name, args });
+      if (name === 'list_models') {
+        throw new ToolCallError(
+          { code: 'result_too_large', message: 'The catalog exceeds the result limit.' },
+          'The catalog exceeds the result limit.',
+        );
+      }
+      return {};
+    },
+  };
+
+  await handleCreate(frameArgs(), {
+    client: async () => client,
+    write: () => undefined,
+    id: () => 'request-id',
+  });
+
+  assert.deepEqual(
+    calls.map(({ name }) => name),
+    ['list_models', 'create_asset'],
+  );
+  assert.deepEqual(calls[1]?.args, {
+    space_id: 'acme/flight',
+    kind: 'image',
+    model: 'image/frame',
+    prompt: '',
+    references: [{ asset_id: 'as_video', slot: 'source', order: 0 }],
+    params: {},
     count: 1,
     tags: [],
     request_id: 'request-id',
