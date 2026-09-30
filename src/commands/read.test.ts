@@ -34,13 +34,17 @@ test('maps account, list, model, and nested commands to their public MCP tools',
     args: { space_id: 'acme/salt' },
   });
   assert.deepEqual(
-    dataToolCall('models', parseArgs(['--space', 'acme/salt', '--kind', 'video', '--family', 'provider', '--model', 'video/h3-max', '--voice-catalog', 'full'])),
+    dataToolCall('models', parseArgs(['--space', 'acme/salt', '--kind', 'audio', '--model', 'audio/eleven-v4', '--voice-catalog', 'full'])),
     {
       name: 'list_models',
-      args: { space_id: 'acme/salt', kind: 'video', family: 'provider', model: 'video/h3-max', voice_catalog: 'full' },
+      args: { space_id: 'acme/salt', kind: 'audio', model: 'audio/eleven-v4', voice_catalog: 'full' },
     },
   );
   assert.deepEqual(dataToolCall('models', parseArgs([])), { name: 'list_models', args: {} });
+  assert.throws(
+    () => dataToolCall('models', parseArgs(['--voice-catalog', 'full'])),
+    /--voice-catalog full requires --model/,
+  );
   assert.deepEqual(dataToolCall('profile get', parseArgs([])), { name: 'get_profile', args: {} });
   assert.deepEqual(dataToolCall('health', parseArgs([])), { name: 'health_check', args: {} });
   assert.deepEqual(

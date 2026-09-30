@@ -85,8 +85,8 @@ makefx create --space ACCOUNT/SPACE --kind image \
 ```
 
 `models` accepts `--family provider|internal|browser`, `--kind`, and `--model`.
-It omits ElevenLabs voice choices by default; add `--voice-catalog full` to
-include voice names, descriptions, and preview URLs.
+It omits ElevenLabs voice choices by default; add `--voice-catalog full` with
+`--model` set to one speech model to include its voice names, descriptions, and previews.
 `create` uses the compact catalog and the service validates the selected voice.
 `create` accepts repeated `--ref ASSET:SLOT` and `--param NAME=VALUE` options.
 References keep their left-to-right command-line order as MCP order 0, 1, and

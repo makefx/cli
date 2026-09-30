@@ -171,6 +171,9 @@ export function dataToolCall(
       if (voiceCatalog && !['compact', 'full'].includes(voiceCatalog)) {
         throw new CliUsageError('--voice-catalog must be compact or full.');
       }
+      if (voiceCatalog === 'full' && !model) {
+        throw new CliUsageError('--voice-catalog full requires --model <speech-model>.');
+      }
       return {
         name: 'list_models',
         args: {
