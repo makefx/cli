@@ -21,7 +21,7 @@ const USAGE = {
   'space get': 'space get --space ACCOUNT/SPACE [--starred-only] [--json]',
   'space delete': 'space delete --space ACCOUNT/SPACE [--json]',
   models:
-    'models [--space ACCOUNT/SPACE] [--kind image|video|audio] [--family provider|internal|browser] [--json]',
+    'models [--space ACCOUNT/SPACE] [--kind image|video|audio] [--family provider|internal|browser] [--voice-catalog compact|full] [--json]',
   'profile get': 'profile get [--json]',
   health: 'health [--json]',
   estimate:
@@ -153,15 +153,19 @@ export function dataToolCall(
       rejectUnexpected(parsed, command, ['space']);
       return { name: 'delete_space', args: { space_id: required(parsed, 'space', command) } };
     case 'models': {
-      rejectUnexpected(parsed, command, ['space', 'kind', 'family']);
+      rejectUnexpected(parsed, command, ['space', 'kind', 'family', 'voice-catalog']);
       const space = optional(parsed, 'space');
       const kind = optional(parsed, 'kind');
       const family = optional(parsed, 'family');
+      const voiceCatalog = optional(parsed, 'voice-catalog');
       if (kind && !['image', 'video', 'audio'].includes(kind)) {
         throw new CliUsageError('--kind must be image, video, or audio.');
       }
       if (family && !['provider', 'internal', 'browser'].includes(family)) {
         throw new CliUsageError('--family must be provider, internal, or browser.');
+      }
+      if (voiceCatalog && !['compact', 'full'].includes(voiceCatalog)) {
+        throw new CliUsageError('--voice-catalog must be compact or full.');
       }
       return {
         name: 'list_models',
@@ -169,6 +173,7 @@ export function dataToolCall(
           ...(space ? { space_id: space } : {}),
           ...(kind ? { kind } : {}),
           ...(family ? { family } : {}),
+          ...(voiceCatalog ? { voice_catalog: voiceCatalog } : {}),
         },
       };
     }

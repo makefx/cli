@@ -81,8 +81,8 @@ Commands:
   space unpublish --space S     Withdraw the public snapshot (account owner only)
   space delete --space S        Soft-delete a space (account owner only)
   voices sync --account ACCOUNT Refresh the account's ElevenLabs voices
-  models [--space S] [--kind K] [--family F]
-                                List the model catalog for the payer
+  models [--space S] [--kind K] [--family F] [--voice-catalog full]
+                                List models; request voice choices explicitly
   estimate --kind K --model M [--from-asset A] [--recipe-mode current|exact]
                                 Quote creation or replay before spending credits
   create --space S --kind K --model M

@@ -52,7 +52,7 @@ space publish|unpublish       Change public visibility as an account owner
                               (a space the home page is built from cannot be
                               made private)
 voices sync                   Refresh an account's ElevenLabs voices
-models                        List the model catalog for the payer
+models                        List models; use --voice-catalog full for voice choices
 estimate                      Quote creation or replay before spending credits
 create                        Create assets or replay an immutable recipe
 upload                        Upload a local image, video, or audio file
@@ -84,6 +84,9 @@ makefx create --space ACCOUNT/SPACE --kind image \
 ```
 
 `models` accepts `--family provider|internal|browser` as well as `--kind`.
+It omits ElevenLabs voice choices by default; add `--voice-catalog full` to
+include voice names, descriptions, and preview URLs.
+`create` uses the compact catalog and the service validates the selected voice.
 `create` accepts repeated `--ref ASSET:SLOT` and `--param NAME=VALUE` options.
 References keep their left-to-right command-line order as MCP order 0, 1, and
 so on. It also accepts `--seed INTEGER`, `--position '{"x":0,"y":0}'`,

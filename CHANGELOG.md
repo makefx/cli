@@ -3,6 +3,11 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.1.2 — 2026-09-30
+
+- `models` omits large voice choices by default; request them with `--voice-catalog full`.
+- `create` works with the compact catalog and leaves voice validation to the service.
+
 ## 2.1.1 — 2026-09-29
 
 - `create` falls back to server-side validation when a payer's account-aware model catalog exceeds the MCP result-size limit.

@@ -34,10 +34,10 @@ test('maps account, list, model, and nested commands to their public MCP tools',
     args: { space_id: 'acme/salt' },
   });
   assert.deepEqual(
-    dataToolCall('models', parseArgs(['--space', 'acme/salt', '--kind', 'video', '--family', 'provider'])),
+    dataToolCall('models', parseArgs(['--space', 'acme/salt', '--kind', 'video', '--family', 'provider', '--voice-catalog', 'full'])),
     {
       name: 'list_models',
-      args: { space_id: 'acme/salt', kind: 'video', family: 'provider' },
+      args: { space_id: 'acme/salt', kind: 'video', family: 'provider', voice_catalog: 'full' },
     },
   );
   assert.deepEqual(dataToolCall('models', parseArgs([])), { name: 'list_models', args: {} });
@@ -257,6 +257,10 @@ test('rejects invalid usage before authentication', async () => {
   assert.throws(
     () => dataToolCall('models', parseArgs(['--family', 'legacy'])),
     /provider, internal, or browser/,
+  );
+  assert.throws(
+    () => dataToolCall('models', parseArgs(['--voice-catalog', 'verbose'])),
+    /--voice-catalog must be compact or full/,
   );
   assert.throws(
     () => dataToolCall('estimate', parseArgs(['--kind', 'text', '--model', 'text/one'])),
