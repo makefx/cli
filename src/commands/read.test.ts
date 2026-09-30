@@ -40,6 +40,10 @@ test('maps account, list, model, and nested commands to their public MCP tools',
       args: { space_id: 'acme/salt', kind: 'video', family: 'provider' },
     },
   );
+  assert.deepEqual(dataToolCall('models', parseArgs(['--model', 'video/h3-max'])), {
+    name: 'list_models',
+    args: { model: 'video/h3-max' },
+  });
   assert.deepEqual(dataToolCall('models', parseArgs([])), { name: 'list_models', args: {} });
   assert.deepEqual(dataToolCall('profile get', parseArgs([])), { name: 'get_profile', args: {} });
   assert.deepEqual(dataToolCall('health', parseArgs([])), { name: 'health_check', args: {} });

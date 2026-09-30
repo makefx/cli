@@ -90,6 +90,47 @@ test('rejects unknown create options and positionals before authentication', asy
   }
 });
 
+test('reads only the requested catalog entry so a large space catalog cannot fail creation', async () => {
+  // The service refuses an MCP result over 100,000 characters. A space with its
+  // own ElevenLabs key repeats its voice library on every speech model, so its
+  // whole catalog can exceed that while one entry stays small.
+  const calls: Call[] = [];
+  const client: ToolClient = {
+    async call(name, args) {
+      calls.push({ name, args });
+      if (name !== 'list_models') return {};
+      if (args.model === undefined) {
+        throw new Error('result_too_large: The result is larger than 100000 characters.');
+      }
+      return {
+        models: [model({ id: args.model, kind: 'image', params_schema: { type: 'object' } })],
+        credit_eur: 0.01,
+        actions: [],
+      };
+    },
+  };
+  await handleCreate(
+    parseArgs([
+      '--space',
+      'acme/flight',
+      '--kind',
+      'image',
+      '--model',
+      'image/gemini-3-pro-image',
+      '--prompt',
+      'test',
+    ]),
+    { client: async () => client, write: () => undefined, id: () => 'request-id' },
+  );
+  assert.deepEqual(
+    calls.map(({ name, args }) => [name, args.model]),
+    [
+      ['list_models', 'image/gemini-3-pro-image'],
+      ['create_asset', 'image/gemini-3-pro-image'],
+    ],
+  );
+});
+
 test('uses a newly served model id and applies defaults from its live schema', async () => {
   const parsed = parseArgs([
     '--space',
@@ -118,7 +159,7 @@ test('uses a newly served model id and applies defaults from its live schema', a
     calls.map(({ name }) => name),
     ['list_models', 'create_asset'],
   );
-  assert.deepEqual(calls[0]?.args, { space_id: 'acme/flight' });
+  assert.deepEqual(calls[0]?.args, { space_id: 'acme/flight', model: 'image/server-new' });
   assert.deepEqual(calls[1]?.args, {
     space_id: 'acme/flight',
     kind: 'image',
@@ -367,7 +408,7 @@ test('validates speech voices from the paying Space catalog', async () => {
     'voice_id=voice-acme',
   ]);
   const calls = await run(accepted, [speech]);
-  assert.deepEqual(calls[0]?.args, { space_id: 'acme/voice' });
+  assert.deepEqual(calls[0]?.args, { space_id: 'acme/voice', model: 'audio/eleven-v3' });
   const create = calls[1];
   assert.ok(create);
   assert.deepEqual((create.args.params as Record<string, unknown>).voice_id, 'voice-acme');
