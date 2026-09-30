@@ -83,7 +83,8 @@ makefx create --space ACCOUNT/SPACE --kind image \
   --model MODEL --prompt "A painted market" --request-id market-01 --wait --json
 ```
 
-`models` accepts `--family provider|internal|browser` as well as `--kind`.
+`models` accepts `--family provider|internal|browser` and `--model MODEL` as
+well as `--kind`; `--model` prints one entry.
 `create` accepts repeated `--ref ASSET:SLOT` and `--param NAME=VALUE` options.
 References keep their left-to-right command-line order as MCP order 0, 1, and
 so on. It also accepts `--seed INTEGER`, `--position '{"x":0,"y":0}'`,

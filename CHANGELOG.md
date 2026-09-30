@@ -3,6 +3,11 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.2.0 — 2026-09-30
+
+- `create` reads only the requested model's catalog entry, so it no longer fails with `result_too_large` for a space whose ElevenLabs voice library makes the whole catalog exceed the MCP result cap.
+- `models --model MODEL` prints one catalog entry.
+
 ## 2.1.0 — 2026-09-27
 
 - `asset update --position null` unpins a card so the canvas lays it out by its lineage again; an object still pins it. Leaving `--position` off `create` or `upload` now leaves the card to that layout.

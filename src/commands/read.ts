@@ -153,10 +153,11 @@ export function dataToolCall(
       rejectUnexpected(parsed, command, ['space']);
       return { name: 'delete_space', args: { space_id: required(parsed, 'space', command) } };
     case 'models': {
-      rejectUnexpected(parsed, command, ['space', 'kind', 'family']);
+      rejectUnexpected(parsed, command, ['space', 'kind', 'family', 'model']);
       const space = optional(parsed, 'space');
       const kind = optional(parsed, 'kind');
       const family = optional(parsed, 'family');
+      const model = optional(parsed, 'model');
       if (kind && !['image', 'video', 'audio'].includes(kind)) {
         throw new CliUsageError('--kind must be image, video, or audio.');
       }
@@ -169,6 +170,7 @@ export function dataToolCall(
           ...(space ? { space_id: space } : {}),
           ...(kind ? { kind } : {}),
           ...(family ? { family } : {}),
+          ...(model ? { model } : {}),
         },
       };
     }
