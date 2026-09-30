@@ -5,7 +5,7 @@ work with the current service.
 
 ## 2.1.2 — 2026-09-30
 
-- `models` omits large voice choices by default; request them with `--voice-catalog full`.
+- `models` can narrow to one `--model` and omits large voice choices by default; request them with `--voice-catalog full`.
 - `create` works with the compact catalog and leaves voice validation to the service.
 
 ## 2.1.1 — 2026-09-29

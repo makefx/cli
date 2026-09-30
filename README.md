@@ -78,12 +78,13 @@ result.
 
 ```bash
 makefx models --kind image --json
+makefx models --model audio/eleven-v4 --voice-catalog full --json
 makefx estimate --kind image --model MODEL --prompt "A painted market" --json
 makefx create --space ACCOUNT/SPACE --kind image \
   --model MODEL --prompt "A painted market" --request-id market-01 --wait --json
 ```
 
-`models` accepts `--family provider|internal|browser` as well as `--kind`.
+`models` accepts `--family provider|internal|browser`, `--kind`, and `--model`.
 It omits ElevenLabs voice choices by default; add `--voice-catalog full` to
 include voice names, descriptions, and preview URLs.
 `create` uses the compact catalog and the service validates the selected voice.
