@@ -21,7 +21,9 @@ const USAGE = {
   'space get': 'space get --space ACCOUNT/SPACE [--starred-only] [--json]',
   'space delete': 'space delete --space ACCOUNT/SPACE [--json]',
   models:
-    'models [--space ACCOUNT/SPACE] [--kind image|video|audio] [--family provider|internal|browser] [--json]',
+    'models [--space ACCOUNT/SPACE] [--kind image|video|audio] [--family provider|internal|browser] [--model MODEL] [--json]',
+  'voices list':
+    'voices list [--space ACCOUNT/SPACE] [--query TEXT] [--limit 1..50] [--cursor CURSOR] [--all] [--json]',
   'profile get': 'profile get [--json]',
   health: 'health [--json]',
   estimate:
@@ -174,6 +176,27 @@ export function dataToolCall(
         },
       };
     }
+    case 'voices list': {
+      rejectUnexpected(parsed, command, ['space', 'query', 'limit', 'cursor', 'all']);
+      const space = optional(parsed, 'space');
+      const query = optional(parsed, 'query');
+      const limit = integerOption(parsed, 'limit', 1, 50);
+      const cursor = optional(parsed, 'cursor');
+      if (cursor !== undefined && parsed.options.all === 'true') {
+        throw new CliUsageError(
+          `--all reads from the first page and does not take --cursor. ${commandUsage(command)}`,
+        );
+      }
+      return {
+        name: 'list_voices',
+        args: {
+          ...(space ? { space_id: space } : {}),
+          ...(query ? { query } : {}),
+          ...(limit ? { limit } : {}),
+          ...(cursor ? { cursor } : {}),
+        },
+      };
+    }
     case 'profile get':
       rejectUnexpected(parsed, command, []);
       return { name: 'get_profile', args: {} };
@@ -263,6 +286,22 @@ function humanOutput(command: DataCommand, result: Record<string, unknown>): str
           .join(' · '),
       );
   }
+  if (command === 'voices list') {
+    const voices = Array.isArray(result.voices) ? result.voices : [];
+    const lines = voices.map((value) => {
+      const voice = record(value) ?? {};
+      const about = [voice.name, voice.description].filter((item) => typeof item === 'string').join(' · ');
+      return `${String(voice.voice_id)} — ${about}`;
+    });
+    if (lines.length === 0) lines.push('No voices.');
+    lines.push(
+      typeof result.default_voice_id === 'string'
+        ? `Default voice: ${result.default_voice_id}`
+        : 'No default voice: pass --param voice_id=VOICE to create speech.',
+    );
+    if (typeof result.next_cursor === 'string') lines.push(`More: --cursor ${result.next_cursor}`);
+    return lines;
+  }
   if (command === 'profile get') {
     return [
       [result.id, result.email, result.name]
@@ -301,6 +340,22 @@ function humanOutput(command: DataCommand, result: Record<string, unknown>): str
   ];
 }
 
+/** Follows next_cursor from the first page to the last and returns one page holding them all. */
+async function everyVoicePage(
+  client: ToolClient,
+  args: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const voices: unknown[] = [];
+  let page: Record<string, unknown> = {};
+  let cursor: string | undefined;
+  do {
+    page = await client.call('list_voices', { ...args, ...(cursor ? { cursor } : {}) });
+    if (Array.isArray(page.voices)) voices.push(...page.voices);
+    cursor = typeof page.next_cursor === 'string' ? page.next_cursor : undefined;
+  } while (cursor !== undefined);
+  return { voices, default_voice_id: page.default_voice_id ?? null, next_cursor: null };
+}
+
 export async function handleDataCommand(
   command: DataCommand,
   parsed: ParsedArgs,
@@ -308,7 +363,10 @@ export async function handleDataCommand(
 ): Promise<void> {
   const call = dataToolCall(command, parsed);
   const client = await dependencies.client(parsed);
-  const result = await client.call(call.name, call.args);
+  const result =
+    command === 'voices list' && parsed.options.all === 'true'
+      ? await everyVoicePage(client, call.args)
+      : await client.call(call.name, call.args);
   if (parsed.options.json === 'true') {
     dependencies.write(JSON.stringify(result, null, 2));
     return;

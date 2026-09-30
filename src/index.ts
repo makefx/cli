@@ -81,6 +81,8 @@ Commands:
   space unpublish --space S     Withdraw the public snapshot (account owner only)
   space delete --space S        Soft-delete a space (account owner only)
   voices sync --account ACCOUNT Refresh the account's ElevenLabs voices
+  voices list [--space S] [--query TEXT] [--all]
+                                List the voices speech accepts for the payer
   models [--space S] [--kind K] [--family F] [--model M]
                                 List the model catalog for the payer
   estimate --kind K --model M [--from-asset A] [--recipe-mode current|exact]
@@ -176,8 +178,10 @@ function helpForCommand(command: string): string {
 
 function printTopicHelp(topic: string, nested?: string): void {
   if (topic === 'voices') {
-    if (nested && nested !== 'sync') throw new CliUsageError(`Unknown voices command: ${nested}`);
-    console.log(mutationCommandUsage('voices sync'));
+    if (nested === 'sync') console.log(mutationCommandUsage('voices sync'));
+    else if (nested === 'list') console.log(commandUsage('voices list'));
+    else if (nested) throw new CliUsageError(`Unknown voices command: ${nested}`);
+    else console.log(voicesUsage());
     return;
   }
   if (topic === 'audio') {
@@ -239,15 +243,20 @@ async function dispatchCommand(command: string, parsed: ParsedArgs): Promise<voi
     case 'voices': {
       const [subcommand, ...positionals] = parsed.positionals;
       if (!subcommand || subcommand === 'help') {
-        console.log(mutationCommandUsage('voices sync'));
+        console.log(voicesUsage());
         break;
       }
-      if (subcommand !== 'sync') throw new CliUsageError(`Unknown voices command: ${subcommand}`);
+      if (subcommand !== 'sync' && subcommand !== 'list') {
+        throw new CliUsageError(`Unknown voices command: ${subcommand}`);
+      }
       if (parsed.options.help === 'true') {
-        console.log(mutationCommandUsage('voices sync'));
+        console.log(
+          subcommand === 'sync' ? mutationCommandUsage('voices sync') : commandUsage('voices list'),
+        );
         break;
       }
-      await handleMutationCommand('voices sync', { ...parsed, positionals });
+      if (subcommand === 'sync') await handleMutationCommand('voices sync', { ...parsed, positionals });
+      else await handleDataCommand('voices list', { ...parsed, positionals });
       break;
     }
     case 'audio': {
@@ -341,6 +350,10 @@ async function dispatchCommand(command: string, parsed: ParsedArgs): Promise<voi
     default:
       throw new CliUsageError(`Unknown command: ${command}`);
   }
+}
+
+function voicesUsage(): string {
+  return [mutationCommandUsage('voices sync'), commandUsage('voices list')].join('\n');
 }
 
 function printNestedHelp(command: 'space' | 'asset' | 'purchase' | 'profile'): void {

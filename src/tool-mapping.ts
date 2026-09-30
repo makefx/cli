@@ -29,6 +29,7 @@ export const CLI_MCP_TOOL_MAPPING = {
   health_check: 'health',
   list_spaces: 'spaces',
   list_models: 'models',
+  list_voices: 'voices list',
   sync_voices: 'voices sync',
   estimate_credits: 'estimate',
 } as const;
