@@ -45,6 +45,16 @@ test('maps account, list, model, and nested commands to their public MCP tools',
     args: { model: 'video/h3-max' },
   });
   assert.deepEqual(dataToolCall('models', parseArgs([])), { name: 'list_models', args: {} });
+  assert.deepEqual(
+    dataToolCall(
+      'voices list',
+      parseArgs(['--space', 'acme/salt', '--query', 'narrator', '--limit', '10', '--cursor', '10']),
+    ),
+    {
+      name: 'list_voices',
+      args: { space_id: 'acme/salt', query: 'narrator', limit: 10, cursor: '10' },
+    },
+  );
   assert.deepEqual(dataToolCall('profile get', parseArgs([])), { name: 'get_profile', args: {} });
   assert.deepEqual(dataToolCall('health', parseArgs([])), { name: 'health_check', args: {} });
   assert.deepEqual(
@@ -140,6 +150,7 @@ test('each handler authenticates once, calls exactly one tool, and preserves env
     ['space get', ['--space', 'acme/salt'], 'get_space'],
     ['space delete', ['--space', 'acme/salt'], 'delete_space'],
     ['models', [], 'list_models'],
+    ['voices list', [], 'list_voices'],
     ['profile get', [], 'get_profile'],
     ['health', [], 'health_check'],
     ['estimate', ['--kind', 'image', '--model', 'image/gemini-3-pro-image'], 'estimate_credits'],
@@ -304,4 +315,58 @@ test('surfaces tool failures without a second call', async () => {
     (error) => error === failure,
   );
   assert.equal(calls, 1);
+});
+
+test('voices list prints one line per voice, the default, and where to read on', async () => {
+  const lines: string[] = [];
+  await handleDataCommand('voices list', parseArgs(['--space', 'acme/salt']), {
+    client: async () => ({
+      call: async () => ({
+        voices: [
+          { voice_id: 'v1', name: 'Nell', description: 'Bright · narration' },
+          { voice_id: 'v2', name: 'Ivo' },
+        ],
+        default_voice_id: null,
+        next_cursor: '2',
+      }),
+    }),
+    write: (text) => lines.push(text),
+  });
+  assert.deepEqual(lines, [
+    'v1 — Nell · Bright · narration',
+    'v2 — Ivo',
+    'No default voice: pass --param voice_id=VOICE to create speech.',
+    'More: --cursor 2',
+  ]);
+});
+
+test('voices list --all follows next_cursor and prints one page holding every voice', async () => {
+  const calls: Array<Record<string, unknown>> = [];
+  const json: string[] = [];
+  await handleDataCommand('voices list', parseArgs(['--space', 'acme/salt', '--all', '--json']), {
+    client: async () => ({
+      call: async (name, args) => {
+        assert.equal(name, 'list_voices');
+        calls.push(args);
+        return args.cursor === undefined
+          ? { voices: [{ voice_id: 'v1', name: 'Nell' }], default_voice_id: 'v1', next_cursor: '1' }
+          : { voices: [{ voice_id: 'v2', name: 'Ivo' }], default_voice_id: 'v1', next_cursor: null };
+      },
+    }),
+    write: (text) => json.push(text),
+  });
+  assert.deepEqual(calls, [{ space_id: 'acme/salt' }, { space_id: 'acme/salt', cursor: '1' }]);
+  assert.deepEqual(JSON.parse(json[0] ?? ''), {
+    voices: [
+      { voice_id: 'v1', name: 'Nell' },
+      { voice_id: 'v2', name: 'Ivo' },
+    ],
+    default_voice_id: 'v1',
+    next_cursor: null,
+  });
+  assert.throws(
+    () => dataToolCall('voices list', parseArgs(['--all', '--cursor', '25'])),
+    /--all reads from the first page/,
+  );
+  assert.throws(() => dataToolCall('voices list', parseArgs(['--limit', '51'])), /from 1 to 50/);
 });

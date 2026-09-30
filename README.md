@@ -52,6 +52,7 @@ space publish|unpublish       Change public visibility as an account owner
                               (a space the home page is built from cannot be
                               made private)
 voices sync                   Refresh an account's ElevenLabs voices
+voices list                   List the voices speech accepts for the payer
 models                        List the model catalog for the payer
 estimate                      Quote creation or replay before spending credits
 create                        Create assets or replay an immutable recipe
@@ -85,6 +86,9 @@ makefx create --space ACCOUNT/SPACE --kind image \
 
 `models` accepts `--family provider|internal|browser` and `--model MODEL` as
 well as `--kind`; `--model` prints one entry.
+Speech takes a `voice_id` from the paying account's voices, which the catalog
+does not repeat: `voices list --space ACCOUNT/SPACE [--query TEXT]` prints one
+page and the `--cursor` for the next, and `--all` reads every page.
 `create` accepts repeated `--ref ASSET:SLOT` and `--param NAME=VALUE` options.
 References keep their left-to-right command-line order as MCP order 0, 1, and
 so on. It also accepts `--seed INTEGER`, `--position '{"x":0,"y":0}'`,

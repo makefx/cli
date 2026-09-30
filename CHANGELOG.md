@@ -3,6 +3,10 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.3.0 — 2026-09-30
+
+- `voices list [--space ACCOUNT/SPACE] [--query TEXT] [--limit 1..50] [--cursor CURSOR] [--all]` lists the voices speech accepts for the paying account, one page at a time, through the new `list_voices` tool. The catalog no longer names voices, so a large ElevenLabs library no longer makes `models --space` exceed the MCP result cap.
+
 ## 2.2.0 — 2026-09-30
 
 - `create` reads only the requested model's catalog entry, so it no longer fails with `result_too_large` for a space whose ElevenLabs voice library makes the whole catalog exceed the MCP result cap.

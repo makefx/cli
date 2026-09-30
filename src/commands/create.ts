@@ -358,8 +358,7 @@ export async function handleCreate(
 ): Promise<void> {
   const prepared = prepareCreate(parsed);
   const client = await dependencies.client(parsed);
-  // One entry: a space's full catalog repeats its voice library on every speech
-  // model and can exceed the MCP result cap.
+  // One entry is all creation needs; the whole catalog is not read here.
   const catalog = await client.call('list_models', { space_id: prepared.spaceId, model: prepared.model });
   const entry = catalogModels(catalog).find(({ id, hidden }) => id === prepared.model && !hidden);
   if (!entry) {

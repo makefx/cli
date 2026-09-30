@@ -480,8 +480,10 @@
       "type": "object",
       "properties": {
         "voice_id": {
-          "default": "voice-1",
-          "type": "string"
+          "title": "Voice",
+          "type": "string",
+          "description": "A voice_id from list_voices for the same space.",
+          "default": "voice-1"
         },
         "stability": {
           "default": 0.5,
@@ -506,8 +508,10 @@
       "type": "object",
       "properties": {
         "voice_id": {
-          "default": "EXAVITQu4vr4xnSDxMaL",
-          "type": "string"
+          "title": "Voice",
+          "type": "string",
+          "description": "A voice_id from list_voices for the same space.",
+          "default": "EXAVITQu4vr4xnSDxMaL"
         },
         "stability": {
           "default": 0.5,
@@ -531,8 +535,10 @@
       "type": "object",
       "properties": {
         "voice_id": {
-          "default": "EXAVITQu4vr4xnSDxMaL",
-          "type": "string"
+          "title": "Voice",
+          "type": "string",
+          "description": "A voice_id from list_voices for the same space.",
+          "default": "EXAVITQu4vr4xnSDxMaL"
         },
         "stability": {
           "default": 0.5,
@@ -962,8 +968,10 @@
       "type": "object",
       "properties": {
         "voice_id": {
-          "default": "voice-1",
-          "type": "string"
+          "title": "Voice",
+          "type": "string",
+          "description": "A voice_id from list_voices for the same space.",
+          "default": "voice-1"
         },
         "stability": {
           "default": 0.5,

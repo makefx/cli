@@ -18,6 +18,7 @@
   "link_assets",
   "list_models",
   "list_spaces",
+  "list_voices",
   "sync_voices",
   "unlink_assets",
   "update_asset",
