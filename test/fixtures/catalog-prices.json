@@ -45,7 +45,7 @@
   },
   {
     "id": "image/gpt-image-2.5-sunburst",
-    "terms": "image/gpt-image-2.5-sunburst#2",
+    "terms": "image/gpt-image-2.5-sunburst#3",
     "price": {
       "own_key": {
         "unit": "image",
@@ -58,13 +58,13 @@
           "when": {
             "quality": "low"
           },
-          "credits": 2
+          "credits": 3
         },
         {
           "when": {
             "quality": "medium"
           },
-          "credits": 3
+          "credits": 4
         },
         {
           "when": {
