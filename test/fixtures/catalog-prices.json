@@ -44,6 +44,35 @@
     }
   },
   {
+    "id": "image/gemini-nano-banana-2.1",
+    "terms": "image/gemini-nano-banana-2.1#1",
+    "price": {
+      "managed_markup_percent": 25,
+      "own_key": {
+        "unit": "image",
+        "credits": 2
+      },
+      "unit": "image",
+      "credits": 3.683241,
+      "rules": [
+        {
+          "when": {
+            "resolution": "2k"
+          },
+          "credits": 5.524861
+        },
+        {
+          "when": {
+            "resolution": "4k"
+          },
+          "credits": 8.287292
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
     "id": "image/gpt-image-2.5-sunburst",
     "terms": "image/gpt-image-2.5-sunburst#3",
     "price": {

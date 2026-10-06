@@ -13,6 +13,17 @@ test('accepts every parameter schema in the model catalog snapshot', () => {
   for (const entry of catalog) assertJsonSchema(entry.schema, entry.id);
 });
 
+test('accepts Nano Banana 2.1 4K settings from the service catalog', () => {
+  const entry = catalog.find((model) => model.id === 'image/gemini-nano-banana-2.1');
+  assert.ok(entry);
+  assertJsonSchema(entry.schema);
+  assert.deepEqual(validateJsonSchema(entry.schema, { resolution: '4k' }), {
+    ok: true,
+    value: { aspect_ratio: '1:1', resolution: '4k' },
+  });
+  assert.equal(validateJsonSchema(entry.schema, { resolution: '8k' }).ok, false);
+});
+
 test('validates the arrays, objects, bounds, required fields, and defaults emitted by the catalog', () => {
   const schema = {
     type: 'object',
