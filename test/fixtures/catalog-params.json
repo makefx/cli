@@ -53,6 +53,33 @@
     }
   },
   {
+    "id": "image/gemini-nano-banana-2.1",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "aspect_ratio": {
+          "default": "1:1",
+          "enum": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "16:9",
+            "9:16"
+          ]
+        },
+        "resolution": {
+          "default": "1k",
+          "enum": [
+            "1k",
+            "2k",
+            "4k"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
     "id": "image/gpt-image-2.5-sunburst",
     "schema": {
       "type": "object",
