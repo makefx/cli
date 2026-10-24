@@ -140,7 +140,7 @@ function helpForCommand(command: string): string {
     logout: 'Usage: makefx logout [--env production|stage|local] [--local]',
     mcp: 'Usage: makefx mcp [--env production|stage|local] [--local]',
     create:
-      'Usage: makefx create --space ACCOUNT/SPACE --kind image|video|audio --model MODEL [--prompt TEXT] [--ref ASSET:SLOT]... [--param NAME=VALUE]... [--count 1..8] [--name TEXT] [--seed INTEGER] [--position JSON] [--tags JSON] [--note TEXT] [--from-asset ASSET] [--recipe-mode current|exact] [--request-id ID] [--wait] [--json]\nRepeated --ref values preserve left-to-right order as reference order 0, 1, and so on. Reads the live catalog for the paying Space before calling create_asset.',
+      'Usage: makefx create --space ACCOUNT/SPACE --kind image|video|audio|3d --model MODEL [--prompt TEXT] [--ref ASSET:SLOT]... [--param NAME=VALUE]... [--count 1..8] [--name TEXT] [--seed INTEGER] [--position JSON] [--tags JSON] [--note TEXT] [--from-asset ASSET] [--recipe-mode current|exact] [--request-id ID] [--wait] [--json]\nRepeated --ref values preserve left-to-right order as reference order 0, 1, and so on. Reads the live catalog for the paying Space before calling create_asset.',
     export: `Usage: makefx ${CONVENIENCE_USAGE.export}`,
     open: `Usage: makefx ${CONVENIENCE_USAGE.open}\nPrints web_url before opening. Set MAKEFX_NO_OPEN=1 for scripts.`,
   };

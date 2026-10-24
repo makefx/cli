@@ -18,7 +18,7 @@ const defaults: CreateDependencies = {
 };
 
 const USAGE =
-  'Usage: makefx create --space ACCOUNT/SPACE --kind image|video|audio --model MODEL [--prompt TEXT] [--ref ASSET:SLOT]... [--param NAME=VALUE]... [--count 1..8] [--name TEXT] [--seed INTEGER] [--position JSON] [--tags JSON] [--note TEXT] [--from-asset ASSET] [--recipe-mode current|exact] [--request-id ID] [--wait] [--json]';
+  'Usage: makefx create --space ACCOUNT/SPACE --kind image|video|audio|3d --model MODEL [--prompt TEXT] [--ref ASSET:SLOT]... [--param NAME=VALUE]... [--count 1..8] [--name TEXT] [--seed INTEGER] [--position JSON] [--tags JSON] [--note TEXT] [--from-asset ASSET] [--recipe-mode current|exact] [--request-id ID] [--wait] [--json]';
 const CREATE_OPTIONS = new Set([
   'env',
   'local',
@@ -62,7 +62,7 @@ type PreparedCreate = {
 
 type LiveModel = {
   id: string;
-  kind: 'image' | 'video' | 'audio';
+  kind: 'image' | 'video' | 'audio' | '3d';
   availability: 'available' | 'preview' | 'unavailable';
   hidden: boolean;
   paramsSchema: JsonSchema;
@@ -180,8 +180,8 @@ function prepareCreate(parsed: ParsedArgs): PreparedCreate {
   rejectFlagValues(parsed);
   optional(parsed, 'env');
   const kind = required(parsed, 'kind');
-  if (!['image', 'video', 'audio'].includes(kind)) {
-    throw new CliUsageError('--kind must be image, video, or audio.');
+  if (!['image', 'video', 'audio', '3d'].includes(kind)) {
+    throw new CliUsageError('--kind must be image, video, audio, or 3d.');
   }
   const model = required(parsed, 'model');
   const references = (parsed.values.ref ?? []).map((value, order) => {
@@ -264,7 +264,7 @@ function catalogModels(document: Record<string, unknown>): LiveModel[] {
     if (ids.has(model.id))
       throw new Error(`list_models returned a malformed catalog: duplicate model "${model.id}".`);
     ids.add(model.id);
-    if (!['image', 'video', 'audio'].includes(String(model.kind))) {
+    if (!['image', 'video', 'audio', '3d'].includes(String(model.kind))) {
       throw new Error(`list_models returned a malformed catalog: model "${model.id}" has an invalid kind.`);
     }
     if (!['available', 'preview', 'unavailable'].includes(String(model.availability))) {
@@ -288,10 +288,10 @@ function catalogModels(document: Record<string, unknown>): LiveModel[] {
     const promptMaxChars = model.prompt_max_chars;
     if (
       promptMaxChars !== undefined &&
-      (typeof promptMaxChars !== 'number' || !Number.isSafeInteger(promptMaxChars) || promptMaxChars < 1)
+      (typeof promptMaxChars !== 'number' || !Number.isSafeInteger(promptMaxChars) || promptMaxChars < 0)
     ) {
       throw new Error(
-        `list_models returned a malformed catalog: model "${model.id}" prompt_max_chars must be a positive integer.`,
+        `list_models returned a malformed catalog: model "${model.id}" prompt_max_chars must be a non-negative integer.`,
       );
     }
     return {

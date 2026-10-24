@@ -1075,5 +1075,21 @@
       },
       "additionalProperties": false
     }
+  },
+  {
+    "id": "3d/hi3d-3",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "default": "2048quality",
+          "enum": [
+            "2048quality",
+            "2048master"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
   }
 ]

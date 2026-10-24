@@ -56,7 +56,7 @@ voices list                   List the voices speech accepts for the payer
 models                        List the model catalog for the payer
 estimate                      Quote creation or replay before spending credits
 create                        Create assets or replay an immutable recipe
-upload                        Upload a local image, video, or audio file
+upload                        Upload a local image, video, audio, or 3d file
 download                      Download ready media to a new local file
 asset get|update|delete       Read, change, or soft-delete an asset
 describe                      Describe reusable visual traits
@@ -181,6 +181,21 @@ against a local mock server.
 Contributions are welcome for the public client. Read
 [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) before opening
 a pull request or reporting a vulnerability.
+
+### 3D assets
+
+Create a textured GLB from an image already in a Space:
+
+```sh
+makefx models --kind 3d
+makefx estimate --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3 --ref IMAGE_ASSET:reference
+makefx create --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3 --ref IMAGE_ASSET:reference --param resolution=2048quality --wait
+makefx upload --space ACCOUNT/SPACE --kind 3d --file model.glb
+```
+
+Hi3D uses an image reference instead of a prompt. Read the live catalog for
+settings and use the service quote before generating. GLB uploads infer
+`model/gltf-binary`; ordinary asset downloads and exports preserve the GLB file.
 
 ## License
 

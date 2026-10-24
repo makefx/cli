@@ -340,5 +340,24 @@
       "until": null,
       "after": null
     }
+  },
+  {
+    "id": "3d/hi3d-3",
+    "terms": "3d/hi3d-3#1",
+    "price": {
+      "unit": "asset",
+      "credits": 98.658247,
+      "managed_markup_percent": 25,
+      "rules": [
+        {
+          "when": {
+            "resolution": "2048master"
+          },
+          "credits": 317.898798
+        }
+      ],
+      "until": null,
+      "after": null
+    }
   }
 ]
