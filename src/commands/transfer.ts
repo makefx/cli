@@ -29,11 +29,13 @@ const MIME_BY_EXTENSION: Record<string, string> = {
   '.mp4': 'video/mp4',
   '.png': 'image/png',
   '.wav': 'audio/wav',
+  '.glb': 'model/gltf-binary',
 };
 
 const EXTENSION_BY_MIME: Record<string, string> = {
   'audio/mpeg': '.mp3',
   'audio/wav': '.wav',
+  'model/gltf-binary': '.glb',
   'image/jpeg': '.jpg',
   'image/png': '.png',
   'video/mp4': '.mp4',
@@ -43,7 +45,7 @@ const GLOBAL_OPTIONS = ['env', 'local', 'json'];
 
 const USAGE = {
   upload:
-    'upload --space ACCOUNT/SPACE --kind image|video|audio --file PATH [--mime TYPE] [--name TEXT] [--provider NAME] [--model ORIGIN] [--prompt TEXT] [--param NAME=VALUE]... [--ref ASSET:SLOT]... [--external-run-id ID] [--position JSON] [--tags JSON] [--request-id ID] [--json]',
+    'upload --space ACCOUNT/SPACE --kind image|video|audio|3d --file PATH [--mime TYPE] [--name TEXT] [--provider NAME] [--model ORIGIN] [--prompt TEXT] [--param NAME=VALUE]... [--ref ASSET:SLOT]... [--external-run-id ID] [--position JSON] [--tags JSON] [--request-id ID] [--json]',
   download: 'download ASSET --space ACCOUNT/SPACE [--out PATH] [--json]',
 } as const;
 
@@ -119,8 +121,8 @@ function tagsOption(parsed: ParsedArgs): string[] | undefined {
 
 function mediaKind(parsed: ParsedArgs): string {
   const kind = required(parsed, 'kind', 'upload');
-  if (!['image', 'video', 'audio'].includes(kind)) {
-    throw new CliUsageError('--kind must be image, video, or audio.');
+  if (!['image', 'video', 'audio', '3d'].includes(kind)) {
+    throw new CliUsageError('--kind must be image, video, audio, or 3d.');
   }
   return kind;
 }

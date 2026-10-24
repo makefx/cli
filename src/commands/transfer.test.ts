@@ -355,3 +355,10 @@ test('treats non-success transfer responses and unusable asset states as failure
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('GLB uploads infer the model MIME type and preserve the 3D kind', () => {
+  const args = uploadToolArguments(parseArgs(['--space', 'acme/models', '--kind', '3d', '--file', '/tmp/model.glb']), { path: '/tmp/model.glb', size: 48_000_000 });
+  assert.equal(args.kind, '3d');
+  assert.equal(args.mime, 'model/gltf-binary');
+  assert.equal(args.filename, 'model.glb');
+});

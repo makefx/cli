@@ -268,14 +268,14 @@ test('rejects invalid usage before authentication', async () => {
     /Unknown option --wat.*Usage: makefx asset get/,
   );
   assert.equal(requestedClient, false);
-  assert.throws(() => dataToolCall('models', parseArgs(['--kind', 'text'])), /image, video, or audio/);
+  assert.throws(() => dataToolCall('models', parseArgs(['--kind', 'text'])), /image, video, audio, or 3d/);
   assert.throws(
     () => dataToolCall('models', parseArgs(['--family', 'legacy'])),
     /provider, internal, or browser/,
   );
   assert.throws(
     () => dataToolCall('estimate', parseArgs(['--kind', 'text', '--model', 'text/one'])),
-    /image, video, or audio/,
+    /image, video, audio, or 3d/,
   );
   assert.throws(
     () =>
