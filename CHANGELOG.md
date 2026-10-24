@@ -3,6 +3,11 @@
 The 1.x packages were built from the first version of makefx.app and do not
 work with the current service.
 
+## 2.4.0 — 2026-10-24
+
+- Create, quote, list, and filter 3D assets through the public service catalog.
+- Upload GLB files with automatic MIME detection and download them with the correct extension.
+
 ## 2.3.1 — 2026-10-22
 
 - Browser sign-in pages now match makefx.app, with a starter prompt you can copy to your agent after authorization.

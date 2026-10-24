@@ -1075,5 +1075,65 @@
       },
       "additionalProperties": false
     }
+  },
+  {
+    "id": "3d/hi3d-3",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "default": "2048quality",
+          "oneOf": [
+            {
+              "const": "2048quality",
+              "title": "Quality"
+            },
+            {
+              "const": "2048master",
+              "title": "Master"
+            }
+          ]
+        },
+        "output_mode": {
+          "default": "textured",
+          "description": "Textured includes PBR materials. Geometry creates an untextured model you can texture later.",
+          "oneOf": [
+            {
+              "const": "textured",
+              "title": "Textured model",
+              "description": "Generate geometry and PBR textures together."
+            },
+            {
+              "const": "geometry",
+              "title": "Geometry only",
+              "description": "Generate an untextured shape. Add textures later."
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "id": "3d/hi3d-3-texture",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "default": "2048quality",
+          "oneOf": [
+            {
+              "const": "2048quality",
+              "title": "Quality"
+            },
+            {
+              "const": "2048master",
+              "title": "Master"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
   }
 ]

@@ -21,7 +21,7 @@ const USAGE = {
   'space get': 'space get --space ACCOUNT/SPACE [--starred-only] [--json]',
   'space delete': 'space delete --space ACCOUNT/SPACE [--json]',
   models:
-    'models [--space ACCOUNT/SPACE] [--kind image|video|audio] [--family provider|internal|browser] [--model MODEL] [--json]',
+    'models [--space ACCOUNT/SPACE] [--kind image|video|audio|3d] [--family provider|internal|browser] [--model MODEL] [--json]',
   'voices list':
     'voices list [--space ACCOUNT/SPACE] [--query TEXT] [--limit 1..50] [--cursor CURSOR] [--all] [--json]',
   'profile get': 'profile get [--json]',
@@ -99,8 +99,8 @@ function parameter(value: string): [string, unknown] {
 
 function mediaKind(parsed: ParsedArgs, command: DataCommand): string {
   const kind = required(parsed, 'kind', command);
-  if (!['image', 'video', 'audio'].includes(kind)) {
-    throw new CliUsageError('--kind must be image, video, or audio.');
+  if (!['image', 'video', 'audio', '3d'].includes(kind)) {
+    throw new CliUsageError('--kind must be image, video, audio, or 3d.');
   }
   return kind;
 }
@@ -160,8 +160,8 @@ export function dataToolCall(
       const kind = optional(parsed, 'kind');
       const family = optional(parsed, 'family');
       const model = optional(parsed, 'model');
-      if (kind && !['image', 'video', 'audio'].includes(kind)) {
-        throw new CliUsageError('--kind must be image, video, or audio.');
+      if (kind && !['image', 'video', 'audio', '3d'].includes(kind)) {
+        throw new CliUsageError('--kind must be image, video, audio, or 3d.');
       }
       if (family && !['provider', 'internal', 'browser'].includes(family)) {
         throw new CliUsageError('--family must be provider, internal, or browser.');

@@ -628,3 +628,12 @@ test('waited failure under --json prints the refreshed envelope with the error a
     process.exitCode = previousExitCode;
   }
 });
+
+test('3D generation uses the live model schema and one image reference without a prompt', async () => {
+  const calls = await run(parseArgs(['--space', 'acme/models', '--kind', '3d', '--model', '3d/hi3d-3', '--ref', 'as_image:reference']), [model({ id: '3d/hi3d-3', kind: '3d', prompt_max_chars: 0, params_schema: { type: 'object', properties: { resolution: { enum: ['2048quality', '2048master'], default: '2048quality' } }, additionalProperties: false } })]);
+  const created = calls.find(({ name }) => name === 'create_asset');
+  assert.ok(created);
+  assert.equal(created.args.kind, '3d');
+  assert.equal(created.args.model, '3d/hi3d-3');
+  assert.deepEqual(created.args.references, [{ asset_id: 'as_image', slot: 'reference', order: 0 }]);
+});
