@@ -105,3 +105,17 @@ test('rejects malformed or unsupported schema instead of ignoring it', () => {
   assert.throws(() => assertJsonSchema({ type: 'array', items: 'string' }), /items must be an object/);
   assert.throws(() => assertJsonSchema({ minItems: 2, maxItems: 1 }), /must not exceed/);
 });
+
+test('accepts Tripo segmentation and rig settings from the service catalog', () => {
+  const segment = catalog.find((model) => model.id === '3d/tripo-segment')!;
+  const rig = catalog.find((model) => model.id === '3d/tripo-rig')!;
+  assertJsonSchema(segment.schema);
+  assertJsonSchema(rig.schema);
+  assert.deepEqual(validateJsonSchema(segment.schema, {}), {
+    ok: true, value: { segmentation_granularity: 'balanced', split_by_connectivity: true },
+  });
+  assert.deepEqual(validateJsonSchema(rig.schema, { spec: 'unity', animation: 'walk' }), {
+    ok: true, value: { spec: 'unity', animation: 'walk' },
+  });
+  assert.equal(validateJsonSchema(rig.schema, { animation: 'dance' }).ok, false);
+});

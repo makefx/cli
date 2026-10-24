@@ -1075,5 +1075,56 @@
       },
       "additionalProperties": false
     }
+  },
+  {
+    "id": "3d/tripo-segment",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "segmentation_granularity": {
+          "default": "balanced",
+          "enum": [
+            "simple",
+            "balanced",
+            "detailed"
+          ]
+        },
+        "split_by_connectivity": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "id": "3d/tripo-rig",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "default": "mixamo",
+          "enum": [
+            "tripo",
+            "mixamo",
+            "actorcore",
+            "unity",
+            "unreal",
+            "vrm"
+          ]
+        },
+        "animation": {
+          "default": "none",
+          "description": "Optional humanoid animation. Adds 11 credits; requires a biped model.",
+          "enum": [
+            "none",
+            "idle",
+            "walk",
+            "run"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
   }
 ]
