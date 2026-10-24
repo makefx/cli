@@ -384,5 +384,48 @@
       "until": null,
       "after": null
     }
+  },
+  {
+    "id": "3d/tripo-segment",
+    "terms": "3d/tripo-segment#1",
+    "price": {
+      "unit": "asset",
+      "credits": 43.84811,
+      "managed_markup_percent": 25,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "3d/tripo-rig",
+    "terms": "3d/tripo-rig#1",
+    "price": {
+      "unit": "asset",
+      "credits": 27.405068,
+      "managed_markup_percent": 25,
+      "rules": [
+        {
+          "when": {
+            "animation": "idle"
+          },
+          "credits": 38.367096
+        },
+        {
+          "when": {
+            "animation": "walk"
+          },
+          "credits": 38.367096
+        },
+        {
+          "when": {
+            "animation": "run"
+          },
+          "credits": 38.367096
+        }
+      ],
+      "until": null,
+      "after": null
+    }
   }
 ]
