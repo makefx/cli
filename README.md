@@ -193,6 +193,19 @@ makefx create --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3 --ref IMAGE_ASSE
 makefx upload --space ACCOUNT/SPACE --kind 3d --file model.glb
 ```
 
+Create geometry only, add a second view, or texture an existing GLB:
+
+```sh
+makefx create --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3 --ref FRONT_IMAGE:reference --ref LEFT_IMAGE:left_view --param output_mode=geometry --wait
+makefx estimate --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3-texture --ref MODEL_ASSET:source --ref FRONT_IMAGE:reference
+makefx create --space ACCOUNT/SPACE --kind 3d --model 3d/hi3d-3-texture --ref MODEL_ASSET:source --ref FRONT_IMAGE:reference --wait
+```
+
+`reference` is the front image; `back_view`, `left_view`, and `right_view` are
+optional images of the same object. `output_mode=textured` is the default.
+Texturing requires a source GLB and creates a new asset with PBR textures on
+that geometry. It does not edit the shape or provide free retries.
+
 Hi3D uses an image reference instead of a prompt. Read the live catalog for
 settings and use the service quote before generating. GLB uploads infer
 `model/gltf-binary`; ordinary asset downloads and exports preserve the GLB file.

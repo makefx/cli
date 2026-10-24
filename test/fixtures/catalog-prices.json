@@ -343,7 +343,7 @@
   },
   {
     "id": "3d/hi3d-3",
-    "terms": "3d/hi3d-3#1",
+    "terms": "3d/hi3d-3#2",
     "price": {
       "unit": "asset",
       "credits": 98.658247,
@@ -351,11 +351,36 @@
       "rules": [
         {
           "when": {
+            "output_mode": "geometry",
+            "resolution": "2048master"
+          },
+          "credits": 285.012715
+        },
+        {
+          "when": {
+            "output_mode": "geometry"
+          },
+          "credits": 65.772165
+        },
+        {
+          "when": {
             "resolution": "2048master"
           },
           "credits": 317.898798
         }
       ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
+    "id": "3d/hi3d-3-texture",
+    "terms": "3d/hi3d-3-texture#1",
+    "price": {
+      "unit": "asset",
+      "credits": 32.886082,
+      "managed_markup_percent": 25,
+      "rules": [],
       "until": null,
       "after": null
     }
