@@ -273,6 +273,37 @@
     "prompt_max_chars": 2000
   },
   {
+    "id": "video/kling-4",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "duration_seconds": {
+          "default": 5,
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 30
+        },
+        "resolution": {
+          "default": "720p",
+          "enum": [
+            "720p",
+            "1080p"
+          ]
+        },
+        "aspect_ratio": {
+          "default": "16:9",
+          "enum": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "21:9"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
     "id": "video/kling-video-ai-avatar-v2",
     "schema": {
       "type": "object",

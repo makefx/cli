@@ -218,6 +218,45 @@
     }
   },
   {
+    "id": "video/kling-4",
+    "terms": "video/kling-4#1",
+    "price": {
+      "managed_markup_percent": 25,
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 17.210383,
+      "rules": [
+        {
+          "when": {
+            "resolution": "1080p",
+            "slot": "reference_video",
+            "kind": "video"
+          },
+          "credits": 15.456458
+        },
+        {
+          "when": {
+            "slot": "reference_video",
+            "kind": "video"
+          },
+          "credits": 10.304305
+        },
+        {
+          "when": {
+            "resolution": "1080p"
+          },
+          "credits": 25.760764
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
     "id": "video/kling-video-ai-avatar-v2",
     "terms": "video/kling-video-ai-avatar-v2#4",
     "price": {
