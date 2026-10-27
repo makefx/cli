@@ -24,6 +24,23 @@ test('accepts Nano Banana 2.1 4K settings from the service catalog', () => {
   assert.equal(validateJsonSchema(entry.schema, { resolution: '8k' }).ok, false);
 });
 
+test('accepts Kling 4.0 length, resolution, and frame settings from the service catalog', () => {
+  const entry = catalog.find((model) => model.id === 'video/kling-4');
+  assert.ok(entry);
+  assertJsonSchema(entry.schema);
+  assert.deepEqual(validateJsonSchema(entry.schema, {}), {
+    ok: true,
+    value: { duration_seconds: 5, resolution: '720p', aspect_ratio: '16:9' },
+  });
+  assert.equal(
+    validateJsonSchema(entry.schema, { duration_seconds: 30, resolution: '1080p', aspect_ratio: '21:9' }).ok,
+    true,
+  );
+  assert.equal(validateJsonSchema(entry.schema, { duration_seconds: 2 }).ok, false);
+  assert.equal(validateJsonSchema(entry.schema, { duration_seconds: 31 }).ok, false);
+  assert.equal(validateJsonSchema(entry.schema, { resolution: '4k' }).ok, false);
+});
+
 test('validates the arrays, objects, bounds, required fields, and defaults emitted by the catalog', () => {
   const schema = {
     type: 'object',
