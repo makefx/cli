@@ -437,6 +437,74 @@
     }
   },
   {
+    "id": "video/h3-max-lip-sync",
+    "terms": "video/h3-max-lip-sync#1",
+    "price": {
+      "managed_markup_percent": 25,
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 8.769622,
+      "rules": [
+        {
+          "when": {
+            "resolution": "480p",
+            "slot": "audio_reference",
+            "duration_ms_gt": "15000"
+          },
+          "credits": 6.577216
+        },
+        {
+          "when": {
+            "resolution": "768p",
+            "slot": "audio_reference",
+            "duration_ms_gt": "15000"
+          },
+          "credits": 10.523546
+        },
+        {
+          "when": {
+            "resolution": "1080p",
+            "slot": "audio_reference",
+            "duration_ms_gt": "15000"
+          },
+          "credits": 21.047092
+        },
+        {
+          "when": {
+            "resolution": "2k",
+            "slot": "audio_reference",
+            "duration_ms_gt": "15000"
+          },
+          "credits": 42.094185
+        },
+        {
+          "when": {
+            "resolution": "480p"
+          },
+          "credits": 5.481013
+        },
+        {
+          "when": {
+            "resolution": "1080p"
+          },
+          "credits": 17.539244
+        },
+        {
+          "when": {
+            "resolution": "2k"
+          },
+          "credits": 35.078488
+        }
+      ],
+      "until": null,
+      "after": null
+    }
+  },
+  {
     "id": "3d/tripo-rig",
     "terms": "3d/tripo-rig#1",
     "price": {
