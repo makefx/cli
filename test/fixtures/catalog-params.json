@@ -320,9 +320,9 @@
     }
   },
   {
-    "id": "video/sync-lipsync-2-pro",
+    "id": "video/sync-3",
     "schema": {
-      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "sync_mode": {
           "default": "cut_off",
@@ -336,7 +336,7 @@
           ]
         }
       },
-      "type": "object"
+      "additionalProperties": false
     }
   },
   {
