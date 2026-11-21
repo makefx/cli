@@ -534,5 +534,22 @@
       "until": null,
       "after": null
     }
+  },
+  {
+    "id": "video/sync-3",
+    "terms": "video/sync-3#1",
+    "price": {
+      "managed_markup_percent": 25,
+      "own_key": {
+        "unit": "second",
+        "credits": 5,
+        "seconds": 15
+      },
+      "unit": "second",
+      "credits": 14.612382,
+      "rules": [],
+      "until": null,
+      "after": null
+    }
   }
 ]
